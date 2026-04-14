@@ -1,8 +1,13 @@
 document.addEventListener('DOMContentLoaded', () => {
     const loadingMessage = document.getElementById('loading-message');
     const fallbackMessage = document.getElementById('fallback-message');
+    const marketOnlyMessage = document.getElementById('market-only-message');
     const contentArea = document.getElementById('content-area');
     const currentPriceElement = document.getElementById('current-price');
+    const modelStatusElement = document.getElementById('model-status');
+    const newsStatusElement = document.getElementById('news-status');
+    const newsSentimentElement = document.getElementById('news-sentiment');
+    const newsListElement = document.getElementById('news-list');
     let chartInstance = null;
 
     fetch('/api/analysis')
@@ -27,27 +32,51 @@ document.addEventListener('DOMContentLoaded', () => {
                 throw new Error('Invalid JSON structure');
             }
 
-            if (data.is_fallback) {
-                showFallback();
-                return;
-            }
-
-            // Mostrar el precio si es válido
+            // Render basic UI elements
             if (data.price > 0) {
                 contentArea.classList.remove('hidden');
                 currentPriceElement.textContent = `$${data.price.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
             } else {
-                showFallback();
+                showFallback(true);
                 return;
             }
 
-            // Dibujar el gráfico si el histórico es válido
-            const timestamps = data.history.timestamps;
-            const prices = data.history.prices;
-
-            if (timestamps.length > 0 && prices.length > 0 && timestamps.length === prices.length) {
-                renderChart(timestamps, prices);
+            // Handle fallback and mode states
+            if (data.is_fallback || data.model.mode === 'naive') {
+                showFallback(false);
+            } else if (data.model.mode === 'market_only') {
+                marketOnlyMessage.classList.remove('hidden');
             }
+
+            modelStatusElement.textContent = `Modo: ${data.model.mode.toUpperCase()}`;
+
+            // Render signals
+            document.getElementById('sig-regime').textContent = data.signals.market_regime;
+            document.getElementById('sig-imbalance').textContent = data.signals.order_book_imbalance.toFixed(4);
+            document.getElementById('sig-spread').textContent = data.signals.spread_bps.toFixed(2);
+            document.getElementById('sig-volume').textContent = data.signals.volume_pressure.toFixed(4);
+            document.getElementById('sig-confidence').textContent = (data.signals.confidence * 100).toFixed(1) + '%';
+
+            // Render news
+            if (data.news && data.news.is_available) {
+                newsStatusElement.textContent = 'Disponible';
+                newsSentimentElement.textContent = data.signals.news_sentiment.toFixed(2);
+
+                newsListElement.innerHTML = '';
+                const topNews = data.news.headlines.slice(0, 5);
+                topNews.forEach(item => {
+                    const li = document.createElement('li');
+                    li.innerHTML = `<strong>${item.source}</strong>: ${item.title} <br><small>Sentimiento: ${item.sentiment}</small>`;
+                    newsListElement.appendChild(li);
+                });
+            } else {
+                newsStatusElement.textContent = 'No Disponible';
+                newsSentimentElement.textContent = 'N/A';
+                newsListElement.innerHTML = '<li>No hay noticias recientes de Bitcoin disponibles.</li>';
+            }
+
+            // Render chart combining history and prediction
+            renderChart(data.history, data.prediction);
 
         })
         .catch(error => {
@@ -56,40 +85,95 @@ document.addEventListener('DOMContentLoaded', () => {
             showFallback();
         });
 
-    function showFallback() {
+    function showFallback(hideContent) {
         fallbackMessage.classList.remove('hidden');
-        contentArea.classList.add('hidden');
+        if (hideContent) {
+            contentArea.classList.add('hidden');
+        }
     }
 
-    function renderChart(timestamps, prices) {
+    function renderChart(history, prediction) {
         const ctx = document.getElementById('historyChart').getContext('2d');
 
-        // Formatear timestamps a fechas legibles
-        const labels = timestamps.map(ts => {
+        // Combine timestamps for X-axis
+        let allTimestamps = [];
+        if (history.timestamps && history.timestamps.length > 0) {
+            allTimestamps = [...history.timestamps];
+        }
+
+        let predStartIndex = allTimestamps.length;
+        if (prediction.timestamps && prediction.timestamps.length > 0) {
+            allTimestamps = [...allTimestamps, ...prediction.timestamps];
+        }
+
+        // Format labels
+        const labels = allTimestamps.map(ts => {
             const date = new Date(ts);
             return date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
         });
+
+        // Prepare datasets
+        let historyData = [];
+        if (history.prices && history.prices.length > 0) {
+            historyData = [...history.prices];
+            // Pad historyData with nulls for the prediction portion
+            if (prediction.prices && prediction.prices.length > 0) {
+                historyData = historyData.concat(Array(prediction.prices.length).fill(null));
+            }
+        }
+
+        let predictionData = [];
+        if (prediction.prices && prediction.prices.length > 0) {
+            // Pad predictionData with nulls for the history portion
+            predictionData = Array(predStartIndex).fill(null);
+
+            // To connect the lines, set the last point of history as the first point of prediction if possible
+            if (history.prices && history.prices.length > 0) {
+                predictionData[predStartIndex - 1] = history.prices[history.prices.length - 1];
+            }
+
+            predictionData = predictionData.concat(prediction.prices);
+        }
 
         // Destruir instancia anterior si existe
         if (chartInstance) {
             chartInstance.destroy();
         }
 
+        const datasets = [];
+        if (historyData.length > 0) {
+            datasets.push({
+                label: 'Histórico BTC/USDT',
+                data: historyData,
+                borderColor: '#f7931a', // Naranja Bitcoin
+                backgroundColor: 'rgba(247, 147, 26, 0.1)',
+                borderWidth: 2,
+                pointRadius: 0,
+                pointHoverRadius: 4,
+                fill: true,
+                tension: 0.1
+            });
+        }
+
+        if (predictionData.length > 0) {
+            datasets.push({
+                label: 'Predicción 24h',
+                data: predictionData,
+                borderColor: '#3498db', // Azul
+                borderDash: [5, 5],
+                borderWidth: 2,
+                pointRadius: 0,
+                pointHoverRadius: 4,
+                fill: false,
+                tension: 0.1
+            });
+        }
+
         chartInstance = new Chart(ctx, {
             type: 'line',
             data: {
                 labels: labels,
-                datasets: [{
-                    label: 'BTC/USDT',
-                    data: prices,
-                    borderColor: '#f7931a', // Color naranja de Bitcoin
-                    backgroundColor: 'rgba(247, 147, 26, 0.1)',
-                    borderWidth: 2,
-                    pointRadius: 0,
-                    pointHoverRadius: 4,
-                    fill: true,
-                    tension: 0.1
-                }]
+                datasets: datasets
             },
             options: {
                 responsive: true,

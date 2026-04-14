@@ -10,12 +10,15 @@
 </head>
 <body>
     <div class="container">
-        <h1>BTC/USDT Analysis</h1>
+        <h1>Análisis y Predicción BTC/USDT (V2)</h1>
 
         <div id="status-area">
             <p id="loading-message">Cargando...</p>
-            <div id="fallback-message" class="hidden">
-                Datos no disponibles en este momento.
+            <div id="fallback-message" class="hidden alert alert-danger">
+                Datos no disponibles en este momento. Predicción de contingencia.
+            </div>
+            <div id="market-only-message" class="hidden alert alert-warning">
+                Predicción generada sin noticias (Solo Mercado).
             </div>
         </div>
 
@@ -23,10 +26,36 @@
             <div class="price-container">
                 <h2>Precio Actual</h2>
                 <p id="current-price">--</p>
+                <div id="model-status" class="badge">Modo: Cargando...</div>
             </div>
 
             <div class="chart-container">
                 <canvas id="historyChart"></canvas>
+            </div>
+
+            <div class="dashboard-grid">
+                <div class="card">
+                    <h3>Señales del Mercado</h3>
+                    <ul id="signals-list">
+                        <li>Régimen: <span id="sig-regime">--</span></li>
+                        <li>Desequilibrio Order Book: <span id="sig-imbalance">--</span></li>
+                        <li>Spread (bps): <span id="sig-spread">--</span></li>
+                        <li>Presión Volumen: <span id="sig-volume">--</span></li>
+                        <li>Confianza: <span id="sig-confidence">--</span></li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <h3>Noticias y Sentimiento</h3>
+                    <div id="news-summary">
+                        <p>Estado: <span id="news-status">--</span></p>
+                        <p>Sentimiento Promedio: <span id="news-sentiment">--</span></p>
+                    </div>
+                    <h4>Titulares Recientes (Top 5)</h4>
+                    <ul id="news-list">
+                        <!-- Llenado dinámico -->
+                    </ul>
+                </div>
             </div>
         </div>
     </div>
