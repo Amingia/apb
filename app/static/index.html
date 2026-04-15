@@ -16,8 +16,8 @@
                 <p class="subtitle">Visión del mercado global para BTC/USDT a 24 horas</p>
             </div>
             <div class="status-indicator">
-                <span id="update-time" class="time-badge">Actualizando...</span>
-                <span id="model-status" class="status-badge pulse">Iniciando motor...</span>
+                <span id="update-time" class="time-badge">Última actualización: --:--:--</span>
+                <span class="status-badge">Actualización automática cada 60 s</span>
             </div>
         </header>
 
@@ -27,10 +27,7 @@
                 <p>Procesando datos del mercado e IA local...</p>
             </div>
             <div id="fallback-message" class="hidden alert alert-danger">
-                <span class="icon">⚠️</span> <strong>Aviso:</strong> Sistema operando en modo de contingencia básica por falta de datos en la red.
-            </div>
-            <div id="market-only-message" class="hidden alert alert-warning">
-                <span class="icon">ℹ️</span> <strong>Aviso:</strong> Predicción generada exclusivamente con análisis técnico (fuentes de noticias no disponibles).
+                <span class="icon">⚠️</span> <strong>Aviso:</strong> Sistema en modo contingencia (datos red limitados). Funcionalidad reducida.
             </div>
         </div>
 
@@ -44,7 +41,7 @@
                     </div>
                 </div>
                 <div class="confidence-card">
-                    <h3>Nivel de Confianza del Modelo</h3>
+                    <h3>Confianza del Sistema Predictivo</h3>
                     <div class="progress-bar-container">
                         <div id="confidence-bar" class="progress-bar"></div>
                     </div>
@@ -57,28 +54,30 @@
             </div>
 
             <div class="dashboard-grid">
-                <div class="card">
-                    <h3><span class="icon">📊</span> Termómetro del Mercado</h3>
+                <div class="card" style="grid-column: 1 / -1;">
+                    <h3><span class="icon">📊</span> Resumen del mercado</h3>
                     <ul class="signals-list">
                         <li>
-                            <span class="label">Régimen Actual</span>
-                            <span id="sig-regime" class="value highlight">--</span>
+                            <span class="label">Tendencia reciente</span>
+                            <span id="market-trend" class="value highlight">--</span>
                         </li>
                         <li>
-                            <span class="label">Desequilibrio Order Book</span>
-                            <span id="sig-imbalance" class="value">--</span>
+                            <span class="label">Volatilidad</span>
+                            <span id="market-volatility" class="value">--</span>
                         </li>
                         <li>
-                            <span class="label">Diferencial Bid/Ask (bps)</span>
-                            <span id="sig-spread" class="value">--</span>
+                            <span class="label">Presión dominante</span>
+                            <span id="market-pressure" class="value">--</span>
                         </li>
                         <li>
-                            <span class="label">Presión de Volumen</span>
-                            <span id="sig-volume" class="value">--</span>
+                            <span class="label">Liquidez (Diferencial)</span>
+                            <span id="market-liquidity" class="value">--</span>
                         </li>
                     </ul>
+                    <p id="market-summary-text" style="color: var(--text-muted); margin-top: 15px; font-style: italic;">
+                        Analizando condiciones...
+                    </p>
                 </div>
-
             </div>
         </div>
     </div>

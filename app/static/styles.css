@@ -77,6 +77,10 @@ body {
     margin-bottom: 20px;
 }
 
+.alert-warning {
+    display: none !important; /* Removed in V6 */
+}
+
 .loading-state {
     text-align: center;
     padding: 40px;

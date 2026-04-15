@@ -1,59 +1,57 @@
 @echo off
 chcp 65001 >nul
 cd /d "%~dp0"
+echo =======================================================
+echo      Instalador Análisis y Predicción BTC/USDT V6
+echo =======================================================
+echo.
 
-echo Iniciando instalación robusta del Análisis y Predicción BTC/USDT (V5)...
-
+REM Comprobar si Python está instalado
 python --version >nul 2>&1
-if %errorlevel% neq 0 (
-    echo Error: Python no está instalado o no está en el PATH.
-    echo Por favor, instálalo antes de continuar.
+IF %ERRORLEVEL% NEQ 0 (
+    echo [ERROR] Python no está instalado o no está en el PATH.
+    echo Por favor, descarga e instala Python desde https://www.python.org/downloads/
+    echo Asegúrate de marcar la casilla "Add Python to PATH" durante la instalación.
     pause
-    exit /b 1
+    goto :eof
 )
 
-if not exist requirements.txt (
-    echo Error: No se ha encontrado el archivo 'requirements.txt' en el directorio actual.
+echo [OK] Python detectado.
+
+if not exist "%~dp0requirements.txt" (
+    echo [ERROR] No se ha encontrado el archivo 'requirements.txt' en el directorio actual.
     echo Asegúrate de ejecutar este script desde la carpeta raíz del proyecto.
     pause
-    exit /b 1
+    goto :eof
 )
 
-if not exist venv (
-    echo Creando entorno virtual (venv)...
-    python -m venv venv
-    if %errorlevel% neq 0 (
-        echo Error crítico: No se pudo crear el entorno virtual.
-        pause
-        exit /b 1
-    )
-) else (
-    echo El entorno virtual ya existe. Procediendo a actualizarlo...
-)
-
-echo Activando entorno virtual...
-call venv\Scripts\activate
-if %errorlevel% neq 0 (
-    echo Error crítico: No se pudo activar el entorno virtual.
+echo.
+echo Creando entorno virtual...
+python -c "import venv; venv.create('venv', with_pip=True)"
+IF %ERRORLEVEL% NEQ 0 (
+    echo [ERROR] No se pudo crear el entorno virtual.
     pause
-    exit /b 1
+    goto :eof
 )
 
-echo Actualizando pip...
+echo.
+echo Activando entorno virtual e instalando dependencias...
+call venv\Scripts\activate.bat
+
+REM Actualizamos pip de forma segura usando el ejecutable del entorno virtual
 python -m pip install --upgrade pip >nul 2>&1
 
-echo Instalando dependencias requeridas...
-pip install -r requirements.txt
-if %errorlevel% neq 0 (
-    echo Error crítico: Falló la instalación de las dependencias.
-    echo Revisa tu conexión a internet o los errores detallados arriba.
+REM Instalamos las dependencias usando la ruta absoluta
+python -m pip install -r "%~dp0requirements.txt"
+IF %ERRORLEVEL% NEQ 0 (
+    echo [ERROR] Hubo un problema instalando las dependencias.
     pause
-    exit /b 1
+    goto :eof
 )
 
 echo.
 echo =======================================================
-echo Instalación completada con éxito. El entorno está listo.
+echo [ÉXITO] Instalación completada con éxito. El entorno está listo.
 echo Para arrancar la aplicación, ejecuta: run.bat
 echo =======================================================
 pause

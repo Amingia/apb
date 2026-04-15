@@ -1,3 +1,5 @@
+import asyncio
+from datetime import datetime
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import JSONResponse
@@ -15,18 +17,24 @@ app = FastAPI()
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+# Global cache to store the latest analysis result
+_analysis_cache = {}
+
 # Strict JSON fallback template for severe failures
 FALLBACK_RESPONSE = {
     "price": 0,
     "is_training": False,
     "is_fallback": True,
+    "last_updated": "",
     "history": {
         "timestamps": [],
         "prices": []
     },
     "prediction": {
         "timestamps": [],
-        "prices": []
+        "prices": [],
+        "lower_prices": [],
+        "upper_prices": []
     },
     "signals": {
         "news_sentiment": 0.0,
@@ -51,25 +59,89 @@ FALLBACK_RESPONSE = {
     }
 }
 
-@app.get("/api/analysis")
-def get_analysis():
+async def update_analysis_cache():
     """
-    Orchestrates market data, news, features, and model to return a strict JSON contract.
+    Background task to continuously fetch data, train, and update the cache.
     """
+    global _analysis_cache
+    while True:
+        try:
+            logger.info("Updating analysis cache...")
+            market_data = fetch_btcusdt_data()
+            current_price = market_data["price"]
+
+            save_snapshot(current_price, market_data["bookTicker"], market_data["depth"])
+            snapshots = load_snapshots()
+            orderbook_metrics = get_orderbook_metrics(snapshots[-1], snapshots)
+
+            news_data = fetch_recent_news()
+
+            current_features, historical_matrix = compute_features(
+                market_data["history"]["prices"],
+                market_data["history"]["volumes"],
+                orderbook_metrics,
+                news_data
+            )
+
+            predicted_prices, predicted_timestamps, mode, model_info, lower_prices, upper_prices = train_and_predict(
+                current_price,
+                current_features,
+                historical_matrix,
+                news_data["is_available"],
+                market_data["history"]["timestamps"]
+            )
+
+            response = {
+                "price": current_price,
+                "is_training": False,
+                "is_fallback": mode == "naive",
+                "last_updated": datetime.now().isoformat() + "Z",
+                "history": {
+                    "timestamps": market_data["history"]["timestamps"],
+                    "prices": market_data["history"]["prices"]
+                },
+                "prediction": {
+                    "timestamps": predicted_timestamps,
+                    "prices": predicted_prices,
+                    "lower_prices": lower_prices,
+                    "upper_prices": upper_prices
+                },
+                "signals": current_features["signals"],
+                "news": news_data,
+                "model": {
+                    "name": model_info["name"],
+                    "mode": mode,
+                    "version": model_info["version"],
+                    "trained_on_points": model_info["trained_on_points"],
+                    "last_trained_at": model_info["last_trained_at"]
+                }
+            }
+            _analysis_cache = response
+            logger.info("Analysis cache updated successfully.")
+        except Exception as e:
+            logger.error(f"Error updating analysis cache: {e}")
+            if not _analysis_cache:
+                fallback = FALLBACK_RESPONSE.copy()
+                fallback["last_updated"] = datetime.now().isoformat() + "Z"
+                _analysis_cache = fallback
+
+        # Wait 60 seconds before next update
+        await asyncio.sleep(60)
+
+@app.on_event("startup")
+async def startup_event():
+    # Pre-populate cache synchronously to avoid blocking the first request
     try:
-        # 1. Fetch market data
+        logger.info("Running initial synchronous data fetch...")
         market_data = fetch_btcusdt_data()
         current_price = market_data["price"]
 
-        # 2. Save order book snapshot and calculate metrics
         save_snapshot(current_price, market_data["bookTicker"], market_data["depth"])
         snapshots = load_snapshots()
         orderbook_metrics = get_orderbook_metrics(snapshots[-1], snapshots)
 
-        # 3. Fetch news
         news_data = fetch_recent_news()
 
-        # 4. Compute features
         current_features, historical_matrix = compute_features(
             market_data["history"]["prices"],
             market_data["history"]["volumes"],
@@ -77,8 +149,7 @@ def get_analysis():
             news_data
         )
 
-        # 5. Train model and predict
-        predicted_prices, predicted_timestamps, mode, model_info = train_and_predict(
+        predicted_prices, predicted_timestamps, mode, model_info, lower_prices, upper_prices = train_and_predict(
             current_price,
             current_features,
             historical_matrix,
@@ -86,18 +157,20 @@ def get_analysis():
             market_data["history"]["timestamps"]
         )
 
-        # 6. Construct response respecting strict JSON contract
-        response = {
+        _analysis_cache.update({
             "price": current_price,
             "is_training": False,
             "is_fallback": mode == "naive",
+            "last_updated": datetime.now().isoformat() + "Z",
             "history": {
                 "timestamps": market_data["history"]["timestamps"],
                 "prices": market_data["history"]["prices"]
             },
             "prediction": {
                 "timestamps": predicted_timestamps,
-                "prices": predicted_prices
+                "prices": predicted_prices,
+                "lower_prices": lower_prices,
+                "upper_prices": upper_prices
             },
             "signals": current_features["signals"],
             "news": news_data,
@@ -108,13 +181,26 @@ def get_analysis():
                 "trained_on_points": model_info["trained_on_points"],
                 "last_trained_at": model_info["last_trained_at"]
             }
-        }
-        return response
-
+        })
     except Exception as e:
-        logger.error(f"Error generating analysis: {e}")
-        # Always return 200 OK with the fallback contract on severe failure
-        return JSONResponse(content=FALLBACK_RESPONSE, status_code=200)
+        logger.error(f"Error during initial synchronous fetch: {e}")
+        fallback = FALLBACK_RESPONSE.copy()
+        fallback["last_updated"] = datetime.now().isoformat() + "Z"
+        _analysis_cache.update(fallback)
+
+    # Start the background polling task
+    asyncio.create_task(update_analysis_cache())
+
+@app.get("/api/analysis")
+def get_analysis():
+    """
+    Returns the latest cached analysis.
+    """
+    if not _analysis_cache:
+        fallback = FALLBACK_RESPONSE.copy()
+        fallback["last_updated"] = datetime.now().isoformat() + "Z"
+        return JSONResponse(content=fallback, status_code=200)
+    return _analysis_cache
 
 # Serve static files for the frontend
 app.mount("/", StaticFiles(directory="app/static", html=True), name="static")

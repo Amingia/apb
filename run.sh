@@ -1,39 +1,22 @@
 #!/bin/bash
 cd "$(dirname "$0")"
 
-echo "Arrancando aplicación de Análisis y Predicción BTC/USDT (V5)..."
+echo "======================================================="
+echo "    Iniciando Análisis y Predicción BTC/USDT V6..."
+echo "======================================================="
+echo ""
 
 if [ ! -f "venv/bin/activate" ]; then
-    echo "Error crítico: No se ha encontrado el entorno virtual."
-    echo "Asegúrate de ejecutar './install.sh' primero en este directorio."
+    echo "[ERROR] El entorno virtual no existe. Por favor ejecuta ./install.sh primero."
     exit 1
 fi
 
-echo "Activando entorno virtual..."
 source venv/bin/activate
-if [ $? -ne 0 ]; then
-    echo "Error crítico: Falló la activación del entorno virtual."
-    exit 1
-fi
 
-echo "Comprobando instalación de dependencias principales..."
-python3 -c "import uvicorn; import fastapi" >/dev/null 2>&1
-if [ $? -ne 0 ]; then
-    echo "Error crítico: Faltan dependencias esenciales (FastAPI, Uvicorn, etc)."
-    echo "Por favor, asegúrate de que './install.sh' finalizó correctamente."
-    exit 1
-fi
-
-echo ""
-echo "======================================================="
-echo "Servidor levantándose..."
-echo "Podrás acceder a la aplicación localmente en: http://127.0.0.1:8000"
-echo "======================================================="
+echo "Arrancando el servidor local..."
+echo "La aplicación estará disponible en http://localhost:8000"
+echo "Mantén esta ventana abierta mientras uses la aplicación."
+echo "Presiona Ctrl+C para cerrar el servidor."
 echo ""
 
-uvicorn app.main:app --host 127.0.0.1 --port 8000
-if [ $? -ne 0 ]; then
-    echo "Error crítico: El servidor uvicorn se detuvo o falló al arrancar."
-    echo "Revisa el registro de errores anterior."
-    exit 1
-fi
+python3 -m uvicorn app.main:app --host 0.0.0.0 --port 8000

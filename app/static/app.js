@@ -1,87 +1,73 @@
 document.addEventListener('DOMContentLoaded', () => {
     const loadingMessage = document.getElementById('loading-message');
     const fallbackMessage = document.getElementById('fallback-message');
-    const marketOnlyMessage = document.getElementById('market-only-message');
     const contentArea = document.getElementById('content-area');
     const currentPriceElement = document.getElementById('current-price');
-    const modelStatusElement = document.getElementById('model-status');
+    const updateTimeElement = document.getElementById('update-time');
     let chartInstance = null;
 
-    const MODE_TRANSLATIONS = {
-        'hybrid': 'Híbrido',
-        'market_only': 'Solo mercado',
-        'naive': 'Contingencia'
-    };
+    function fetchData() {
+        fetch('/api/analysis')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                loadingMessage.classList.add('hidden');
 
-    fetch('/api/analysis')
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.json();
-        })
-        .then(data => {
-            // Siempre quitar el mensaje de carga
-            loadingMessage.classList.add('hidden');
+                if (
+                    typeof data.price !== 'number' ||
+                    typeof data.is_training !== 'boolean' ||
+                    typeof data.is_fallback !== 'boolean' ||
+                    !data.history || !Array.isArray(data.history.timestamps) || !Array.isArray(data.history.prices) ||
+                    !data.prediction || !Array.isArray(data.prediction.timestamps) || !Array.isArray(data.prediction.prices)
+                ) {
+                    throw new Error('Invalid JSON structure');
+                }
 
-            // Validar contrato
-            if (
-                typeof data.price !== 'number' ||
-                typeof data.is_training !== 'boolean' ||
-                typeof data.is_fallback !== 'boolean' ||
-                !data.history || !Array.isArray(data.history.timestamps) || !Array.isArray(data.history.prices) ||
-                !data.prediction || !Array.isArray(data.prediction.timestamps) || !Array.isArray(data.prediction.prices)
-            ) {
-                throw new Error('Invalid JSON structure');
-            }
+                if (data.price > 0) {
+                    contentArea.classList.remove('hidden');
+                    currentPriceElement.textContent = `$${data.price.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+                } else {
+                    showFallback(true);
+                    return;
+                }
 
-            // Render basic UI elements
-            if (data.price > 0) {
-                contentArea.classList.remove('hidden');
-                currentPriceElement.textContent = `$${data.price.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
-            } else {
-                showFallback(true);
-                return;
-            }
+                if (data.is_fallback || data.model.mode === 'naive') {
+                    showFallback(false);
+                } else {
+                    fallbackMessage.classList.add('hidden');
+                }
 
-            // Handle fallback and mode states
-            if (data.is_fallback || data.model.mode === 'naive') {
-                showFallback(false);
-            } else if (data.model.mode === 'market_only') {
-                marketOnlyMessage.classList.remove('hidden');
-            }
+                // Update Time
+                if (data.last_updated) {
+                    const date = new Date(data.last_updated);
+                    updateTimeElement.textContent = 'Última actualización: ' + date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+                }
 
-            const modeEs = MODE_TRANSLATIONS[data.model.mode] || data.model.mode.toUpperCase();
-            modelStatusElement.textContent = `Modo: ${modeEs}`;
+                // Render Market Summary
+                renderMarketSummary(data.signals);
 
-            // Render signals
-            const regimenTraducido = {
-                'bullish': 'Alcista',
-                'bearish': 'Bajista',
-                'neutral': 'Neutral'
-            }[data.signals.market_regime] || data.signals.market_regime;
+                // Render Confidence
+                const confidenceVal = data.signals.confidence * 100;
+                let confidenceLabel = "Baja";
+                if (confidenceVal >= 60) confidenceLabel = "Alta";
+                else if (confidenceVal >= 30) confidenceLabel = "Media";
 
-            document.getElementById('sig-regime').textContent = regimenTraducido;
-            document.getElementById('sig-imbalance').textContent = data.signals.order_book_imbalance.toFixed(4);
-            document.getElementById('sig-spread').textContent = data.signals.spread_bps.toFixed(2);
-            document.getElementById('sig-volume').textContent = data.signals.volume_pressure.toFixed(4);
+                const confidencePct = confidenceVal.toFixed(1);
+                document.getElementById('sig-confidence').textContent = `${confidencePct}% (${confidenceLabel})`;
+                document.getElementById('confidence-bar').style.width = confidencePct + '%';
 
-            const confidencePct = (data.signals.confidence * 100).toFixed(1);
-            document.getElementById('sig-confidence').textContent = confidencePct + '%';
-            document.getElementById('confidence-bar').style.width = confidencePct + '%';
-
-            // Note: News data is intentionally excluded from the UI per V5 constraints,
-            // although it is still processed in the backend.
-
-            // Render chart combining history and prediction
-            renderChart(data.history, data.prediction);
-
-        })
-        .catch(error => {
-            console.error('Fetch error:', error);
-            loadingMessage.classList.add('hidden');
-            showFallback();
-        });
+                renderChart(data.history, data.prediction);
+            })
+            .catch(error => {
+                console.error('Fetch error:', error);
+                loadingMessage.classList.add('hidden');
+                showFallback();
+            });
+    }
 
     function showFallback(hideContent) {
         fallbackMessage.classList.remove('hidden');
@@ -89,6 +75,49 @@ document.addEventListener('DOMContentLoaded', () => {
             contentArea.classList.add('hidden');
         }
     }
+
+    function renderMarketSummary(signals) {
+        // Trend
+        let trend = "Lateral";
+        let trendColor = "var(--text-muted)";
+        if (signals.market_regime === "bullish" || signals.market_regime === "alcista") {
+            trend = "Alcista";
+            trendColor = "var(--success-text)";
+        } else if (signals.market_regime === "bearish" || signals.market_regime === "bajista") {
+            trend = "Bajista";
+            trendColor = "var(--danger-text)";
+        }
+        const trendEl = document.getElementById('market-trend');
+        trendEl.textContent = trend;
+        trendEl.style.color = trendColor;
+
+        // Volatility logic based on raw confidence proxy (if used) or just pressure
+        let vol = "Media";
+        if (signals.confidence < 0.3) vol = "Alta";
+        else if (signals.confidence > 0.7) vol = "Baja";
+        document.getElementById('market-volatility').textContent = vol;
+
+        // Pressure
+        let pressure = "Equilibrada";
+        if (signals.order_book_imbalance > 0.1) pressure = "Compradora";
+        else if (signals.order_book_imbalance < -0.1) pressure = "Vendedora";
+        document.getElementById('market-pressure').textContent = pressure;
+
+        // Liquidity
+        let liquidity = "Normal";
+        if (signals.spread_bps > 10) liquidity = "Ajustada";
+        else if (signals.spread_bps < 2) liquidity = "Cómoda";
+        document.getElementById('market-liquidity').textContent = liquidity;
+
+        // Descriptive sentence
+        document.getElementById('market-summary-text').textContent = `El mercado muestra tendencia ${trend.toLowerCase()} con presión ${pressure.toLowerCase()} y volatilidad ${vol.toLowerCase()}.`;
+    }
+
+    // Initial fetch
+    fetchData();
+
+    // Auto-refresh every 60 seconds
+    setInterval(fetchData, 60000);
 
     function renderChart(history, prediction) {
         const ctx = document.getElementById('historyChart').getContext('2d');
@@ -129,16 +158,29 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         let predictionData = [];
-        if (prediction.prices && prediction.prices.length > 0) {
-            // Pad predictionData with nulls for the history portion
-            predictionData = Array(predStartIndex).fill(null);
+        let lowerBandData = [];
+        let upperBandData = [];
 
-            // To connect the lines, set the last point of history as the first point of prediction if possible
+        if (prediction.prices && prediction.prices.length > 0) {
+            // Pad prediction datasets with nulls for the history portion
+            predictionData = Array(predStartIndex).fill(null);
+            lowerBandData = Array(predStartIndex).fill(null);
+            upperBandData = Array(predStartIndex).fill(null);
+
+            // To connect the lines visually, set the last point of history as the first point
             if (histPrices.length > 0) {
-                predictionData[predStartIndex - 1] = histPrices[histPrices.length - 1];
+                const lastHistPrice = histPrices[histPrices.length - 1];
+                predictionData[predStartIndex - 1] = lastHistPrice;
+                lowerBandData[predStartIndex - 1] = lastHistPrice;
+                upperBandData[predStartIndex - 1] = lastHistPrice;
             }
 
             predictionData = predictionData.concat(prediction.prices);
+
+            if (prediction.lower_prices && prediction.upper_prices) {
+                lowerBandData = lowerBandData.concat(prediction.lower_prices);
+                upperBandData = upperBandData.concat(prediction.upper_prices);
+            }
         }
 
         // Destruir instancia anterior si existe
@@ -161,7 +203,32 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
 
-        if (predictionData.length > 0) {
+        if (upperBandData.length > predStartIndex) {
+            datasets.push({
+                label: 'Banda Superior',
+                data: upperBandData,
+                borderColor: 'rgba(52, 152, 219, 0.0)', // Transparent border
+                backgroundColor: 'rgba(52, 152, 219, 0.15)', // Light blue shade
+                borderWidth: 0,
+                pointRadius: 0,
+                fill: '+1', // Fill to next dataset (lower band)
+                tension: 0.1
+            });
+        }
+
+        if (lowerBandData.length > predStartIndex) {
+            datasets.push({
+                label: 'Banda Inferior',
+                data: lowerBandData,
+                borderColor: 'rgba(52, 152, 219, 0.0)',
+                borderWidth: 0,
+                pointRadius: 0,
+                fill: false,
+                tension: 0.1
+            });
+        }
+
+        if (predictionData.length > predStartIndex) {
             datasets.push({
                 label: 'Predicción 24h',
                 data: predictionData,

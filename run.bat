@@ -1,46 +1,24 @@
 @echo off
 chcp 65001 >nul
 cd /d "%~dp0"
+echo =======================================================
+echo     Iniciando Análisis y Predicción BTC/USDT V6...
+echo =======================================================
+echo.
 
-echo Arrancando aplicación de Análisis y Predicción BTC/USDT (V5)...
-
-if not exist venv\Scripts\activate.bat (
-    echo Error crítico: No se ha encontrado el entorno virtual.
-    echo Asegúrate de ejecutar 'install.bat' primero en este directorio.
+IF NOT EXIST "venv\Scripts\activate.bat" (
+    echo [ERROR] El entorno virtual no existe. Por favor ejecuta install.bat primero.
     pause
-    exit /b 1
+    goto :eof
 )
 
-echo Activando entorno virtual...
 call venv\Scripts\activate.bat
-if %errorlevel% neq 0 (
-    echo Error: Falló la activación del entorno virtual.
-    pause
-    exit /b 1
-)
 
-echo Comprobando instalación de dependencias principales...
-python -c "import uvicorn; import fastapi" >nul 2>&1
-if %errorlevel% neq 0 (
-    echo Error: Faltan dependencias críticas (FastAPI, Uvicorn, etc).
-    echo Por favor, asegúrate de que 'install.bat' finalizó correctamente.
-    pause
-    exit /b 1
-)
-
-echo.
-echo =======================================================
-echo Servidor levantándose...
-echo Podrás acceder a la aplicación localmente en: http://127.0.0.1:8000
-echo =======================================================
+echo Arrancando el servidor local...
+echo La aplicación estará disponible en http://localhost:8000
+echo Mantén esta ventana abierta mientras uses la aplicación.
+echo Presiona Ctrl+C para cerrar el servidor.
 echo.
 
-uvicorn app.main:app --host 127.0.0.1 --port 8000
-if %errorlevel% neq 0 (
-    echo Error crítico: El servidor uvicorn se detuvo o falló al arrancar.
-    echo Revisa el registro de errores anterior.
-    pause
-    exit /b 1
-)
-
+python -m uvicorn app.main:app --host 0.0.0.0 --port 8000
 pause

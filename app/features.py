@@ -49,12 +49,14 @@ def compute_features(prices, volumes, orderbook_metrics, news_data):
         momentum_7[i] = (prices_arr[i] - prices_arr[i-7]) / prices_arr[i-7] if prices_arr[i-7] > 0 else 0.0
 
     # 5. Build historical feature matrix for training
-    # Targets: Return(t) (we predict the next log return for better stability)
+    # Targets: Return(t) for multiple horizons (we predict 24 steps ahead simultaneously)
     X = []
     y = []
 
     start_idx = ma_long_window
-    for i in range(start_idx, len(prices_arr) - 1): # -1 because we need target for next step
+    horizon = 24
+
+    for i in range(start_idx, len(prices_arr) - horizon):
         p_prev = prices_arr[i]
         if p_prev <= 0:
             continue
@@ -66,16 +68,21 @@ def compute_features(prices, volumes, orderbook_metrics, news_data):
             (prices_arr[i] - ma_long[i]) / ma_long[i],        # F4: Distancia porcentual a la MA larga
             volatility_short[i],                              # F5: Volatilidad corta
             volatility_long[i],                               # F6: Volatilidad larga
-            volumes_arr[i],                                   # F7: Volumen (escala cruda/log proxy útil para arboles)
+            volumes_arr[i],                                   # F7: Volumen
         ]
 
         # Validar numéricos
         features_row = [0.0 if not np.isfinite(f) else float(f) for f in features_row]
         X.append(features_row)
 
-        # Objetivo es predecir el siguiente retorno porcentual
-        target_val = returns[i + 1]
-        y.append(0.0 if not np.isfinite(target_val) else float(target_val))
+        # Objective is to predict the cumulative returns for the next 24 hours
+        target_row = []
+        for h in range(1, horizon + 1):
+            future_price = prices_arr[i + h]
+            cum_return = (future_price - p_prev) / p_prev
+            target_row.append(0.0 if not np.isfinite(cum_return) else float(cum_return))
+
+        y.append(target_row)
 
     # Calculate current features (latest index)
     curr_idx = len(prices_arr) - 1
