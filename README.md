@@ -1,4 +1,4 @@
-# Análisis y Predicción Inteligente BTC/USDT (Versión 6)
+# Análisis y Predicción Inteligente BTC/USDT (Versión 8)
 
 Esta aplicación proporciona un análisis técnico avanzado en tiempo real y una predicción algorítmica de 24 horas para el par BTC/USDT. Utiliza datos del mercado histórico (restringidos visualmente a las últimas 168 horas para máxima legibilidad), información en vivo del libro de órdenes y análisis de sentimiento de noticias globales. Todo ello funciona bajo un backend de FastAPI cacheado de refresco continuo, servido mediante una interfaz oscura, limpia y sin ruido visual innecesario, completamente en español de España.
 
@@ -6,46 +6,34 @@ Esta aplicación proporciona un análisis técnico avanzado en tiempo real y una
 
 ## Requisitos Previos
 
-- Python 3.9 o superior.
+- Windows 10 o Windows 11.
+- Python 3.9 o superior instalado y marcado en la casilla "Add Python to PATH".
 - Conexión a internet estable (para acceder a Binance y API de noticias).
 
-## Instalación Automática
+## Instalación Automática en Windows
 
-El proyecto incluye rutinas de instalación altamente robustas (`install.bat` y `install.sh`) que gestionan la creación de entornos virtuales y dependencias sin errores de codificación ni rutas de archivos mal resueltas.
+El proyecto incluye una rutina de instalación sólida y a prueba de fallos que gestiona la creación de entornos virtuales y dependencias sin errores de codificación ni rutas mal resueltas. Abre tu terminal (o simplemente haz doble clic) y ejecuta:
 
-**En Windows:**
 ```cmd
 install.bat
 ```
 
-**En Linux / macOS:**
-```bash
-chmod +x install.sh run.sh
-./install.sh
-```
+## Arranque de la Aplicación en Windows
 
-## Arranque de la Aplicación
+El script de ejecución comprobará primero si el entorno existe y si la instalación finalizó correctamente, evitando errores en cascada.
 
-Los scripts de ejecución comprueban primero si el entorno existe y si la instalación finalizó correctamente, evitando errores en cascada.
-
-**En Windows:**
 ```cmd
 run.bat
 ```
 
-**En Linux / macOS:**
-```bash
-./run.sh
-```
-
 Abre tu navegador en: **[http://127.0.0.1:8000](http://127.0.0.1:8000)**
 
-## Actualización Continua y Autónoma
+## Actualización Continua y Precio Vivo
 
-Una de las características clave de esta versión es la recolección continua de datos en segundo plano.
+Una de las características clave de esta versión es la recolección continua de datos con dos cadencias diferenciadas:
 
-1. **Refresco del Servidor:** El servidor de Python cuenta con un hilo de fondo (`background task`) que actualiza la caché local, re-entrenando el modelo y extrayendo nueva información cada 60 segundos automáticamente.
-2. **Refresco del Cliente:** Al tener la web abierta, tu navegador se sincroniza de forma transparente con esa caché, sin que la página parpadee ni se bloquee el gráfico.
+1. **El Precio en Vivo:** El cliente consulta independientemente al backend (`/api/price`) cada **5 segundos** para traerte el último valor dictado por Binance, manteniendo la interfaz viva y reactiva.
+2. **El Análisis Completo:** El servidor de Python cuenta con un hilo de fondo que actualiza la caché local, re-entrenando el modelo y extrayendo nueva información pesada cada **60 segundos** automáticamente. La gráfica absorbe estos cálculos masivos sin bloquearte el precio.
 
 ## El Modelo Predictivo Multi-Horizonte y sus Bandas
 

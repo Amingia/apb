@@ -44,9 +44,17 @@ def compute_features(prices, volumes, orderbook_metrics, news_data):
         volatility_long[i] = np.std(returns[max(0, i - ma_long_window + 1):i + 1]) if i > 0 else 0.0
 
     # 4. Momentum (cambio del retorno sobre ventanas pasadas)
-    momentum_7 = np.zeros_like(returns)
-    for i in range(7, len(prices_arr)):
-        momentum_7[i] = (prices_arr[i] - prices_arr[i-7]) / prices_arr[i-7] if prices_arr[i-7] > 0 else 0.0
+    momentum_1 = returns.copy()
+    momentum_3 = np.zeros_like(returns)
+    momentum_6 = np.zeros_like(returns)
+    momentum_12 = np.zeros_like(returns)
+    momentum_24 = np.zeros_like(returns)
+
+    for i in range(1, len(prices_arr)):
+        if i >= 3: momentum_3[i] = (prices_arr[i] - prices_arr[i-3]) / prices_arr[i-3]
+        if i >= 6: momentum_6[i] = (prices_arr[i] - prices_arr[i-6]) / prices_arr[i-6]
+        if i >= 12: momentum_12[i] = (prices_arr[i] - prices_arr[i-12]) / prices_arr[i-12]
+        if i >= 24: momentum_24[i] = (prices_arr[i] - prices_arr[i-24]) / prices_arr[i-24]
 
     # 5. Build historical feature matrix for training
     # Targets: Return(t) for multiple horizons (we predict 24 steps ahead simultaneously)
@@ -63,12 +71,16 @@ def compute_features(prices, volumes, orderbook_metrics, news_data):
 
         features_row = [
             log_returns[i],                                   # F1: Retorno logarítmico reciente
-            momentum_7[i],                                    # F2: Momentum 7 periodos
-            (prices_arr[i] - ma_short[i]) / ma_short[i],      # F3: Distancia porcentual a la MA corta
-            (prices_arr[i] - ma_long[i]) / ma_long[i],        # F4: Distancia porcentual a la MA larga
-            volatility_short[i],                              # F5: Volatilidad corta
-            volatility_long[i],                               # F6: Volatilidad larga
-            volumes_arr[i],                                   # F7: Volumen
+            momentum_1[i],                                    # F2: Momentum 1h
+            momentum_3[i],                                    # F3: Momentum 3h
+            momentum_6[i],                                    # F4: Momentum 6h
+            momentum_12[i],                                   # F5: Momentum 12h
+            momentum_24[i],                                   # F6: Momentum 24h
+            (prices_arr[i] - ma_short[i]) / ma_short[i],      # F7: Distancia MA corta
+            (prices_arr[i] - ma_long[i]) / ma_long[i],        # F8: Distancia MA larga
+            volatility_short[i],                              # F9: Volatilidad corta
+            volatility_long[i],                               # F10: Volatilidad larga
+            np.log1p(volumes_arr[i]),                         # F11: Log Volumen (mas estable)
         ]
 
         # Validar numéricos
@@ -114,12 +126,16 @@ def compute_features(prices, volumes, orderbook_metrics, news_data):
     # Preparar el vector actual (evitar nulos y asegurar que coincida con el shape de X)
     raw_current = [
         log_returns[curr_idx],
-        momentum_7[curr_idx],
+        momentum_1[curr_idx],
+        momentum_3[curr_idx],
+        momentum_6[curr_idx],
+        momentum_12[curr_idx],
+        momentum_24[curr_idx],
         (curr_price - ma_short[curr_idx]) / ma_short[curr_idx] if ma_short[curr_idx] > 0 else 0.0,
         (curr_price - ma_long[curr_idx]) / ma_long[curr_idx] if ma_long[curr_idx] > 0 else 0.0,
         volatility_short[curr_idx],
         volatility_long[curr_idx],
-        volumes_arr[curr_idx]
+        np.log1p(volumes_arr[curr_idx])
     ]
     raw_current = [0.0 if not np.isfinite(f) else float(f) for f in raw_current]
 
@@ -143,7 +159,7 @@ def compute_features(prices, volumes, orderbook_metrics, news_data):
 def fallback_features(orderbook_metrics, news_data):
     """Fallback if history is insufficient."""
     return {
-        "model_inputs": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+        "model_inputs": [0.0] * 11,
         "signals": {
             "news_sentiment": 0.0,
             "headline_count": 0,

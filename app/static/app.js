@@ -128,9 +128,9 @@ document.addEventListener('DOMContentLoaded', () => {
         // Descriptive sentence
         let description = `El mercado muestra lateralidad probable con rango esperado entre ${rangeText} y baja convicción.`;
         if (trend === "Probable subida") {
-            description = `Se detecta sesgo alcista moderado con fuerza ${strength.toLowerCase()} y volatilidad ${vol.toLowerCase()}.`;
+            description = `Se detecta sesgo alcista con fuerza ${strength.toLowerCase()}, volatilidad ${vol.toLowerCase()} y rango de ${rangeText}.`;
         } else if (trend === "Probable bajada") {
-            description = `Predomina la presión vendedora y el escenario más probable es bajista.`;
+            description = `Predomina la presión vendedora y el escenario más probable es bajista, con rango de ${rangeText}.`;
         }
 
         document.getElementById('market-summary-text').textContent = description;

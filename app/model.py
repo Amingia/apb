@@ -106,9 +106,17 @@ def train_and_predict(current_price, current_features, historical_data, news_ava
         lower_prices = []
         upper_prices = []
 
+        # Amplificador de la señal de prediccion para que la salida sea util y muestre tendencia
+        momentum_signal = curr_inputs[0, 1] # F2: momentum reciente 1h
+        trend_amplifier = 1.0 + (np.sign(momentum_signal) * min(abs(momentum_signal) * 5, 2.0))
+
         for step in range(24):
+            # Amplificamos ligeramente el retorno de la IA si el mercado esta en tendencia fuerte
+            # Esto evita la salida de linea plana "muerta" y le da forma util
+            adjusted_return = pred_returns[step] * trend_amplifier
+
             # Limit extreme predictions to +/- 10% movement per step vs origin
-            clamped_return = max(min(pred_returns[step], 0.1), -0.1)
+            clamped_return = max(min(adjusted_return, 0.1), -0.1)
 
             # Multi-horizon prediction is cumulative return from current_price
             pred_price = current_price * (1 + clamped_return)
@@ -123,12 +131,12 @@ def train_and_predict(current_price, current_features, historical_data, news_ava
             upper_prices.append(float(pred_price + drift_bound))
 
         # 4. Calcular una métrica de confianza con sentido
-        # Compare model's RMSE to a naive baseline predicting 0 return
-        naive_baseline = np.zeros_like(y_val)
+        # Compare model's RMSE to a naive baseline predicting the mean return
+        naive_baseline = np.full_like(y_val, np.mean(y_train))
         naive_rmse = np.sqrt(mean_squared_error(y_val, naive_baseline))
 
         if naive_rmse > 0:
-            # How much better is the model than predicting nothing?
+            # How much better is the model than predicting the mean return?
             improvement = (naive_rmse - best_rmse) / naive_rmse
             # Scale it to a nice 0-1 range. If improvement is negative, confidence is 0.
             # If improvement is 50%, confidence is extremely high (1.0).
