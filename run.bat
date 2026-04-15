@@ -1,8 +1,7 @@
 @echo off
-chcp 65001 >nul
 cd /d "%~dp0"
 echo =======================================================
-echo     Iniciando Análisis y Predicción BTC/USDT V6...
+echo     Iniciando Analisis y Prediccion BTC/USDT V7...
 echo =======================================================
 echo.
 
@@ -15,10 +14,10 @@ IF NOT EXIST "venv\Scripts\activate.bat" (
 call venv\Scripts\activate.bat
 
 echo Arrancando el servidor local...
-echo La aplicación estará disponible en http://localhost:8000
-echo Mantén esta ventana abierta mientras uses la aplicación.
+echo La aplicacion estara disponible en http://localhost:8000
+echo Manten esta ventana abierta mientras uses la aplicacion.
 echo Presiona Ctrl+C para cerrar el servidor.
 echo.
 
-python -m uvicorn app.main:app --host 0.0.0.0 --port 8000
+python -m uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
 pause

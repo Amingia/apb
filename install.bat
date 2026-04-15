@@ -1,17 +1,16 @@
 @echo off
-chcp 65001 >nul
 cd /d "%~dp0"
 echo =======================================================
-echo      Instalador Análisis y Predicción BTC/USDT V6
+echo     Instalador Analisis y Prediccion BTC/USDT V7
 echo =======================================================
 echo.
 
-REM Comprobar si Python está instalado
+REM Comprobar si Python esta instalado
 python --version >nul 2>&1
 IF %ERRORLEVEL% NEQ 0 (
-    echo [ERROR] Python no está instalado o no está en el PATH.
+    echo [ERROR] Python no esta instalado o no esta en el PATH.
     echo Por favor, descarga e instala Python desde https://www.python.org/downloads/
-    echo Asegúrate de marcar la casilla "Add Python to PATH" durante la instalación.
+    echo Asegurate de marcar la casilla "Add Python to PATH" durante la instalacion.
     pause
     goto :eof
 )
@@ -20,7 +19,7 @@ echo [OK] Python detectado.
 
 if not exist "%~dp0requirements.txt" (
     echo [ERROR] No se ha encontrado el archivo 'requirements.txt' en el directorio actual.
-    echo Asegúrate de ejecutar este script desde la carpeta raíz del proyecto.
+    echo Asegurate de ejecutar este script desde la carpeta raiz del proyecto.
     pause
     goto :eof
 )
@@ -51,7 +50,7 @@ IF %ERRORLEVEL% NEQ 0 (
 
 echo.
 echo =======================================================
-echo [ÉXITO] Instalación completada con éxito. El entorno está listo.
-echo Para arrancar la aplicación, ejecuta: run.bat
+echo [EXITO] Instalacion completada con exito. El entorno esta listo.
+echo Para arrancar la aplicacion, ejecuta: run.bat
 echo =======================================================
 pause

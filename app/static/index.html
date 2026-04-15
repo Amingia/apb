@@ -55,23 +55,23 @@
 
             <div class="dashboard-grid">
                 <div class="card" style="grid-column: 1 / -1;">
-                    <h3><span class="icon">📊</span> Resumen del mercado</h3>
+                    <h3><span class="icon">📊</span> Resumen del mercado a 24 horas</h3>
                     <ul class="signals-list">
                         <li>
-                            <span class="label">Tendencia reciente</span>
+                            <span class="label">Dirección probable 24h</span>
                             <span id="market-trend" class="value highlight">--</span>
                         </li>
                         <li>
-                            <span class="label">Volatilidad</span>
+                            <span class="label">Fuerza de la señal</span>
+                            <span id="market-strength" class="value">--</span>
+                        </li>
+                        <li>
+                            <span class="label">Volatilidad esperada</span>
                             <span id="market-volatility" class="value">--</span>
                         </li>
                         <li>
-                            <span class="label">Presión dominante</span>
-                            <span id="market-pressure" class="value">--</span>
-                        </li>
-                        <li>
-                            <span class="label">Liquidez (Diferencial)</span>
-                            <span id="market-liquidity" class="value">--</span>
+                            <span class="label">Rango esperado 24h</span>
+                            <span id="market-range" class="value">--</span>
                         </li>
                     </ul>
                     <p id="market-summary-text" style="color: var(--text-muted); margin-top: 15px; font-style: italic;">

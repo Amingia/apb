@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
 
                 // Render Market Summary
-                renderMarketSummary(data.signals);
+                renderMarketSummary(data.signals, data.prediction);
 
                 // Render Confidence
                 const confidenceVal = data.signals.confidence * 100;
@@ -76,48 +76,90 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    function renderMarketSummary(signals) {
-        // Trend
-        let trend = "Lateral";
+    function renderMarketSummary(signals, prediction) {
+        // Trend (Dirección probable 24h)
+        let trend = "Probable lateralidad";
         let trendColor = "var(--text-muted)";
-        if (signals.market_regime === "bullish" || signals.market_regime === "alcista") {
-            trend = "Alcista";
-            trendColor = "var(--success-text)";
-        } else if (signals.market_regime === "bearish" || signals.market_regime === "bajista") {
-            trend = "Bajista";
-            trendColor = "var(--danger-text)";
+
+        // Calculate dynamic trend based on the prediction if available
+        if (prediction && prediction.prices && prediction.prices.length > 0) {
+            const firstP = prediction.prices[0];
+            const lastP = prediction.prices[prediction.prices.length - 1];
+            const diffPct = (lastP - firstP) / firstP;
+
+            if (diffPct > 0.005) { // more than 0.5% up
+                trend = "Probable subida";
+                trendColor = "var(--success-text)";
+            } else if (diffPct < -0.005) { // more than 0.5% down
+                trend = "Probable bajada";
+                trendColor = "var(--danger-text)";
+            }
         }
+
         const trendEl = document.getElementById('market-trend');
         trendEl.textContent = trend;
         trendEl.style.color = trendColor;
 
-        // Volatility logic based on raw confidence proxy (if used) or just pressure
+        // Volatility logic
         let vol = "Media";
         if (signals.confidence < 0.3) vol = "Alta";
         else if (signals.confidence > 0.7) vol = "Baja";
         document.getElementById('market-volatility').textContent = vol;
 
-        // Pressure
-        let pressure = "Equilibrada";
-        if (signals.order_book_imbalance > 0.1) pressure = "Compradora";
-        else if (signals.order_book_imbalance < -0.1) pressure = "Vendedora";
-        document.getElementById('market-pressure').textContent = pressure;
+        // Strength of signal
+        let strength = "Débil";
+        const combinedPressure = Math.abs(signals.order_book_imbalance) + Math.abs(signals.volume_pressure);
+        if (combinedPressure > 0.4) {
+            strength = "Alta";
+        } else if (combinedPressure > 0.15) {
+            strength = "Moderada";
+        }
+        document.getElementById('market-strength').textContent = strength;
 
-        // Liquidity
-        let liquidity = "Normal";
-        if (signals.spread_bps > 10) liquidity = "Ajustada";
-        else if (signals.spread_bps < 2) liquidity = "Cómoda";
-        document.getElementById('market-liquidity').textContent = liquidity;
+        // 24h Expected Range
+        let rangeText = "Calculando...";
+        if (prediction && prediction.lower_prices && prediction.upper_prices && prediction.lower_prices.length > 0) {
+            const minP = Math.min(...prediction.lower_prices);
+            const maxP = Math.max(...prediction.upper_prices);
+            rangeText = `$${minP.toLocaleString(undefined, {maximumFractionDigits: 0})} - $${maxP.toLocaleString(undefined, {maximumFractionDigits: 0})}`;
+        }
+        document.getElementById('market-range').textContent = rangeText;
 
         // Descriptive sentence
-        document.getElementById('market-summary-text').textContent = `El mercado muestra tendencia ${trend.toLowerCase()} con presión ${pressure.toLowerCase()} y volatilidad ${vol.toLowerCase()}.`;
+        let description = `El mercado muestra lateralidad probable con rango esperado entre ${rangeText} y baja convicción.`;
+        if (trend === "Probable subida") {
+            description = `Se detecta sesgo alcista moderado con fuerza ${strength.toLowerCase()} y volatilidad ${vol.toLowerCase()}.`;
+        } else if (trend === "Probable bajada") {
+            description = `Predomina la presión vendedora y el escenario más probable es bajista.`;
+        }
+
+        document.getElementById('market-summary-text').textContent = description;
+    }
+
+    function fetchLivePrice() {
+        fetch('/api/price')
+            .then(response => {
+                if (!response.ok) throw new Error('Price fetch failed');
+                return response.json();
+            })
+            .then(data => {
+                if (data.price > 0 && !contentArea.classList.contains('hidden')) {
+                    currentPriceElement.textContent = `$${data.price.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+                }
+            })
+            .catch(error => {
+                console.warn('Live price update skipped:', error);
+            });
     }
 
     // Initial fetch
     fetchData();
 
-    // Auto-refresh every 60 seconds
+    // Auto-refresh Full Analysis every 60 seconds
     setInterval(fetchData, 60000);
+
+    // Auto-refresh Live Price every 5 seconds
+    setInterval(fetchLivePrice, 5000);
 
     function renderChart(history, prediction) {
         const ctx = document.getElementById('historyChart').getContext('2d');
