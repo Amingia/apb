@@ -10,51 +10,93 @@
 </head>
 <body>
     <div class="container">
-        <h1>Análisis y Predicción BTC/USDT (V2)</h1>
+        <header class="app-header">
+            <div class="header-content">
+                <h1>Análisis y Predicción Inteligente</h1>
+                <p class="subtitle">Visión del mercado global para BTC/USDT a 24 horas</p>
+            </div>
+            <div class="status-indicator">
+                <span id="update-time" class="time-badge">Actualizando...</span>
+                <span id="model-status" class="status-badge pulse">Iniciando motor...</span>
+            </div>
+        </header>
 
         <div id="status-area">
-            <p id="loading-message">Cargando...</p>
+            <div id="loading-message" class="loading-state">
+                <div class="spinner"></div>
+                <p>Procesando datos del mercado e IA local...</p>
+            </div>
             <div id="fallback-message" class="hidden alert alert-danger">
-                Datos no disponibles en este momento. Predicción de contingencia.
+                <span class="icon">⚠️</span> <strong>Aviso:</strong> Sistema operando en modo de contingencia básica por falta de datos en la red.
             </div>
             <div id="market-only-message" class="hidden alert alert-warning">
-                Predicción generada sin noticias (Solo Mercado).
+                <span class="icon">ℹ️</span> <strong>Aviso:</strong> Predicción generada exclusivamente con análisis técnico (fuentes de noticias no disponibles).
             </div>
         </div>
 
         <div id="content-area" class="hidden">
-            <div class="price-container">
-                <h2>Precio Actual</h2>
-                <p id="current-price">--</p>
-                <div id="model-status" class="badge">Modo: Cargando...</div>
+            <div class="market-overview">
+                <div class="price-card">
+                    <h3>Precio Actual (BTC/USDT)</h3>
+                    <div class="price-display">
+                        <span id="current-price">--</span>
+                        <span id="price-variation" class="variation"></span>
+                    </div>
+                </div>
+                <div class="confidence-card">
+                    <h3>Nivel de Confianza del Modelo</h3>
+                    <div class="progress-bar-container">
+                        <div id="confidence-bar" class="progress-bar"></div>
+                    </div>
+                    <span id="sig-confidence" class="confidence-text">--</span>
+                </div>
             </div>
 
-            <div class="chart-container">
+            <div class="chart-container card">
                 <canvas id="historyChart"></canvas>
             </div>
 
             <div class="dashboard-grid">
                 <div class="card">
-                    <h3>Señales del Mercado</h3>
-                    <ul id="signals-list">
-                        <li>Régimen: <span id="sig-regime">--</span></li>
-                        <li>Desequilibrio Order Book: <span id="sig-imbalance">--</span></li>
-                        <li>Spread (bps): <span id="sig-spread">--</span></li>
-                        <li>Presión Volumen: <span id="sig-volume">--</span></li>
-                        <li>Confianza: <span id="sig-confidence">--</span></li>
+                    <h3><span class="icon">📊</span> Termómetro del Mercado</h3>
+                    <ul class="signals-list">
+                        <li>
+                            <span class="label">Régimen Actual</span>
+                            <span id="sig-regime" class="value highlight">--</span>
+                        </li>
+                        <li>
+                            <span class="label">Desequilibrio Order Book</span>
+                            <span id="sig-imbalance" class="value">--</span>
+                        </li>
+                        <li>
+                            <span class="label">Diferencial Bid/Ask (bps)</span>
+                            <span id="sig-spread" class="value">--</span>
+                        </li>
+                        <li>
+                            <span class="label">Presión de Volumen</span>
+                            <span id="sig-volume" class="value">--</span>
+                        </li>
                     </ul>
                 </div>
 
-                <div class="card">
-                    <h3>Noticias y Sentimiento</h3>
-                    <div id="news-summary">
-                        <p>Estado: <span id="news-status">--</span></p>
-                        <p>Sentimiento Promedio: <span id="news-sentiment">--</span></p>
+                <div class="card news-card">
+                    <h3><span class="icon">📰</span> Impacto Informativo Global</h3>
+                    <div class="news-summary">
+                        <div class="metric">
+                            <span class="label">Estado de Búsqueda</span>
+                            <span id="news-status" class="value">--</span>
+                        </div>
+                        <div class="metric">
+                            <span class="label">Sentimiento Promedio</span>
+                            <span id="news-sentiment" class="value">--</span>
+                        </div>
                     </div>
-                    <h4>Titulares Recientes (Top 5)</h4>
-                    <ul id="news-list">
-                        <!-- Llenado dinámico -->
-                    </ul>
+                    <div class="headlines-container">
+                        <h4 class="section-title">Últimos titulares analizados</h4>
+                        <ul id="news-list" class="news-list">
+                            <!-- Llenado dinámico -->
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
