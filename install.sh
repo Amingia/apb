@@ -1,7 +1,7 @@
 #!/bin/bash
 cd "$(dirname "$0")"
 
-echo "Iniciando instalación robusta del Análisis y Predicción BTC/USDT (V4)..."
+echo "Iniciando instalación robusta del Análisis y Predicción BTC/USDT (V5)..."
 
 # Comprobar si Python está instalado
 if ! command -v python3 &> /dev/null

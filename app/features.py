@@ -90,19 +90,19 @@ def compute_features(prices, volumes, orderbook_metrics, news_data):
         if headlines:
             news_sentiment = sum(h.get("sentiment", 0) for h in headlines) / len(headlines)
 
-    # Market regime logic based on MA crossover and volatility
+    # Market regime logic based on MA crossover and volatility (using standard terms to map nicely in JS)
     regime = "neutral"
     if curr_price > 0:
         ma_ratio = ma_short[curr_idx] / ma_long[curr_idx] if ma_long[curr_idx] > 0 else 1.0
         vol_threshold = np.percentile(volatility_long[start_idx:], 70) if len(volatility_long) > start_idx else 0.02
         if ma_ratio > 1.01 and volatility_long[curr_idx] > vol_threshold:
-            regime = "alcista_volátil"
+            regime = "bullish"
         elif ma_ratio > 1.01:
-            regime = "alcista"
+            regime = "bullish"
         elif ma_ratio < 0.99 and volatility_long[curr_idx] > vol_threshold:
-            regime = "bajista_volátil"
+            regime = "bearish"
         elif ma_ratio < 0.99:
-            regime = "bajista"
+            regime = "bearish"
 
     # Preparar el vector actual (evitar nulos y asegurar que coincida con el shape de X)
     raw_current = [

@@ -2,7 +2,7 @@
 chcp 65001 >nul
 cd /d "%~dp0"
 
-echo Iniciando instalación robusta del Análisis y Predicción BTC/USDT (V4)...
+echo Iniciando instalación robusta del Análisis y Predicción BTC/USDT (V5)...
 
 python --version >nul 2>&1
 if %errorlevel% neq 0 (

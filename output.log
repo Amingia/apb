@@ -1,0 +1,24 @@
+Arrancando aplicación de Análisis y Predicción BTC/USDT (V5)...
+Activando entorno virtual...
+Comprobando instalación de dependencias principales...
+
+=======================================================
+Servidor levantándose...
+Podrás acceder a la aplicación localmente en: http://127.0.0.1:8000
+=======================================================
+
+INFO:     Started server process [339934]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+INFO:     127.0.0.1:49608 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49608 - "GET /styles.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49622 - "GET /app.js HTTP/1.1" 200 OK
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/ticker/price?symbol=BTCUSDT "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/ticker/24hr?symbol=BTCUSDT "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/ticker/bookTicker?symbol=BTCUSDT "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/depth?symbol=BTCUSDT&limit=50 "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/klines?symbol=BTCUSDT&interval=1h&limit=1000 "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/klines?symbol=BTCUSDT&interval=1h&limit=1000&endTime=1772672399999 "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/klines?symbol=BTCUSDT&interval=1h&limit=160&endTime=1769072399999 "HTTP/1.1 200 OK"
+INFO:     127.0.0.1:49622 - "GET /api/analysis HTTP/1.1" 200 OK

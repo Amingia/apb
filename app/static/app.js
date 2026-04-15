@@ -5,10 +5,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const contentArea = document.getElementById('content-area');
     const currentPriceElement = document.getElementById('current-price');
     const modelStatusElement = document.getElementById('model-status');
-    const newsStatusElement = document.getElementById('news-status');
-    const newsSentimentElement = document.getElementById('news-sentiment');
-    const newsListElement = document.getElementById('news-list');
     let chartInstance = null;
+
+    const MODE_TRANSLATIONS = {
+        'hybrid': 'Híbrido',
+        'market_only': 'Solo mercado',
+        'naive': 'Contingencia'
+    };
 
     fetch('/api/analysis')
         .then(response => {
@@ -48,32 +51,27 @@ document.addEventListener('DOMContentLoaded', () => {
                 marketOnlyMessage.classList.remove('hidden');
             }
 
-            modelStatusElement.textContent = `Modo: ${data.model.mode.toUpperCase()}`;
+            const modeEs = MODE_TRANSLATIONS[data.model.mode] || data.model.mode.toUpperCase();
+            modelStatusElement.textContent = `Modo: ${modeEs}`;
 
             // Render signals
-            document.getElementById('sig-regime').textContent = data.signals.market_regime;
+            const regimenTraducido = {
+                'bullish': 'Alcista',
+                'bearish': 'Bajista',
+                'neutral': 'Neutral'
+            }[data.signals.market_regime] || data.signals.market_regime;
+
+            document.getElementById('sig-regime').textContent = regimenTraducido;
             document.getElementById('sig-imbalance').textContent = data.signals.order_book_imbalance.toFixed(4);
             document.getElementById('sig-spread').textContent = data.signals.spread_bps.toFixed(2);
             document.getElementById('sig-volume').textContent = data.signals.volume_pressure.toFixed(4);
-            document.getElementById('sig-confidence').textContent = (data.signals.confidence * 100).toFixed(1) + '%';
 
-            // Render news
-            if (data.news && data.news.is_available) {
-                newsStatusElement.textContent = 'Disponible';
-                newsSentimentElement.textContent = data.signals.news_sentiment.toFixed(2);
+            const confidencePct = (data.signals.confidence * 100).toFixed(1);
+            document.getElementById('sig-confidence').textContent = confidencePct + '%';
+            document.getElementById('confidence-bar').style.width = confidencePct + '%';
 
-                newsListElement.innerHTML = '';
-                const topNews = data.news.headlines.slice(0, 5);
-                topNews.forEach(item => {
-                    const li = document.createElement('li');
-                    li.innerHTML = `<strong>${item.source}</strong>: ${item.title} <br><small>Sentimiento: ${item.sentiment}</small>`;
-                    newsListElement.appendChild(li);
-                });
-            } else {
-                newsStatusElement.textContent = 'No Disponible';
-                newsSentimentElement.textContent = 'N/A';
-                newsListElement.innerHTML = '<li>No hay noticias recientes de Bitcoin disponibles.</li>';
-            }
+            // Note: News data is intentionally excluded from the UI per V5 constraints,
+            // although it is still processed in the backend.
 
             // Render chart combining history and prediction
             renderChart(data.history, data.prediction);
@@ -95,13 +93,21 @@ document.addEventListener('DOMContentLoaded', () => {
     function renderChart(history, prediction) {
         const ctx = document.getElementById('historyChart').getContext('2d');
 
-        // Combine timestamps for X-axis
-        let allTimestamps = [];
-        if (history.timestamps && history.timestamps.length > 0) {
-            allTimestamps = [...history.timestamps];
+        // Limit history to the last 168 hours for better visibility
+        const MAX_HISTORY_POINTS = 168;
+        let histTimestamps = [];
+        let histPrices = [];
+
+        if (history.timestamps && history.timestamps.length > 0 && history.prices && history.prices.length > 0) {
+            const numPoints = Math.min(history.timestamps.length, MAX_HISTORY_POINTS);
+            histTimestamps = history.timestamps.slice(-numPoints);
+            histPrices = history.prices.slice(-numPoints);
         }
 
+        // Combine timestamps for X-axis
+        let allTimestamps = [...histTimestamps];
         let predStartIndex = allTimestamps.length;
+
         if (prediction.timestamps && prediction.timestamps.length > 0) {
             allTimestamps = [...allTimestamps, ...prediction.timestamps];
         }
@@ -114,8 +120,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Prepare datasets
         let historyData = [];
-        if (history.prices && history.prices.length > 0) {
-            historyData = [...history.prices];
+        if (histPrices.length > 0) {
+            historyData = [...histPrices];
             // Pad historyData with nulls for the prediction portion
             if (prediction.prices && prediction.prices.length > 0) {
                 historyData = historyData.concat(Array(prediction.prices.length).fill(null));
@@ -128,8 +134,8 @@ document.addEventListener('DOMContentLoaded', () => {
             predictionData = Array(predStartIndex).fill(null);
 
             // To connect the lines, set the last point of history as the first point of prediction if possible
-            if (history.prices && history.prices.length > 0) {
-                predictionData[predStartIndex - 1] = history.prices[history.prices.length - 1];
+            if (histPrices.length > 0) {
+                predictionData[predStartIndex - 1] = histPrices[histPrices.length - 1];
             }
 
             predictionData = predictionData.concat(prediction.prices);

@@ -1,7 +1,7 @@
 #!/bin/bash
 cd "$(dirname "$0")"
 
-echo "Arrancando aplicación de Análisis y Predicción BTC/USDT (V4)..."
+echo "Arrancando aplicación de Análisis y Predicción BTC/USDT (V5)..."
 
 if [ ! -f "venv/bin/activate" ]; then
     echo "Error crítico: No se ha encontrado el entorno virtual."

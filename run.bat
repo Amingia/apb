@@ -2,7 +2,7 @@
 chcp 65001 >nul
 cd /d "%~dp0"
 
-echo Arrancando aplicación de Análisis y Predicción BTC/USDT (V4)...
+echo Arrancando aplicación de Análisis y Predicción BTC/USDT (V5)...
 
 if not exist venv\Scripts\activate.bat (
     echo Error crítico: No se ha encontrado el entorno virtual.
