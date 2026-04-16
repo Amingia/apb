@@ -1,8 +1,8 @@
-# Análisis y Predicción Inteligente BTC/USDT (Versión 8)
+# Análisis y Predicción Inteligente BTC/USDT (Versión 9)
 
-Esta aplicación proporciona un análisis técnico avanzado en tiempo real y una predicción algorítmica de 24 horas para el par BTC/USDT. Utiliza datos del mercado histórico (restringidos visualmente a las últimas 168 horas para máxima legibilidad), información en vivo del libro de órdenes y análisis de sentimiento de noticias globales. Todo ello funciona bajo un backend de FastAPI cacheado de refresco continuo, servido mediante una interfaz oscura, limpia y sin ruido visual innecesario, completamente en español de España.
+Esta aplicación proporciona un análisis técnico avanzado en tiempo real y una predicción cuantitativa de 24 horas para el par BTC/USDT. Utiliza datos del mercado histórico, información en vivo del libro de órdenes, y análisis de sentimiento de noticias globales (de manera interna). Todo ello funciona bajo un backend de FastAPI cacheado de refresco continuo, servido mediante una interfaz oscura, limpia y sin ruido visual innecesario, completamente en español de España.
 
-**Nota importante sobre datos:** La aplicación recupera noticias globales y las utiliza internamente como una señal para potenciar la precisión de la inteligencia artificial. Sin embargo, **estas no se muestran en la interfaz de usuario**, manteniendo el cuadro de mando simple y centrado exclusivamente en la lectura e interpretación del mercado.
+**Nota importante sobre datos:** La aplicación recupera noticias globales y las utiliza internamente como una señal para empujar sutilmente la inteligencia artificial. Sin embargo, **estas no se muestran en la interfaz de usuario**, manteniendo el cuadro de mando simple y centrado exclusivamente en la lectura e interpretación cuantitativa del mercado.
 
 ## Requisitos Previos
 
@@ -12,7 +12,7 @@ Esta aplicación proporciona un análisis técnico avanzado en tiempo real y una
 
 ## Instalación Automática en Windows
 
-El proyecto incluye una rutina de instalación sólida y a prueba de fallos que gestiona la creación de entornos virtuales y dependencias sin errores de codificación ni rutas mal resueltas. Abre tu terminal (o simplemente haz doble clic) y ejecuta:
+El proyecto incluye una rutina de instalación sólida y a prueba de fallos que gestiona la creación de entornos virtuales y dependencias sin errores de codificación ni rutas mal resueltas. Abre tu terminal o simplemente haz doble clic en:
 
 ```cmd
 install.bat
@@ -20,7 +20,7 @@ install.bat
 
 ## Arranque de la Aplicación en Windows
 
-El script de ejecución comprobará primero si el entorno existe y si la instalación finalizó correctamente, evitando errores en cascada.
+El script de ejecución comprobará primero si el entorno existe y si la instalación finalizó correctamente, evitando errores en cascada. Simplemente haz doble clic o ejecuta:
 
 ```cmd
 run.bat

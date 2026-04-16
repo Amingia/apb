@@ -24,26 +24,36 @@ def compute_features(prices, volumes, orderbook_metrics, news_data):
     returns[~np.isfinite(returns)] = 0.0
     log_returns[~np.isfinite(log_returns)] = 0.0
 
-    # 2. Moving Averages y distancias
-    ma_short_window = 7
-    ma_long_window = 24
+    # 2. EMAs (Exponential Moving Averages) - más reactivas que las simples
+    def calc_ema(data, span):
+        ema = np.zeros_like(data)
+        if len(data) > 0:
+            ema[0] = data[0]
+            alpha = 2 / (span + 1)
+            for i in range(1, len(data)):
+                ema[i] = alpha * data[i] + (1 - alpha) * ema[i - 1]
+        return ema
 
-    ma_short = np.zeros_like(prices_arr)
-    ma_long = np.zeros_like(prices_arr)
+    ema_short = calc_ema(prices_arr, 7)
+    ema_long = calc_ema(prices_arr, 24)
 
-    for i in range(len(prices_arr)):
-        ma_short[i] = np.mean(prices_arr[max(0, i - ma_short_window + 1):i + 1])
-        ma_long[i] = np.mean(prices_arr[max(0, i - ma_long_window + 1):i + 1])
-
-    # 3. Volatilidad e indicadores intrabarra básicos
+    # 3. Volatilidad e indicadores de amplitud
     volatility_short = np.zeros_like(returns)
     volatility_long = np.zeros_like(returns)
+    amplitude = np.zeros_like(prices_arr)
 
-    for i in range(len(returns)):
-        volatility_short[i] = np.std(returns[max(0, i - ma_short_window + 1):i + 1]) if i > 0 else 0.0
-        volatility_long[i] = np.std(returns[max(0, i - ma_long_window + 1):i + 1]) if i > 0 else 0.0
+    for i in range(len(prices_arr)):
+        if i > 0:
+            window_short = returns[max(0, i - 7 + 1):i + 1]
+            window_long = returns[max(0, i - 24 + 1):i + 1]
+            volatility_short[i] = np.std(window_short)
+            volatility_long[i] = np.std(window_long)
 
-    # 4. Momentum (cambio del retorno sobre ventanas pasadas)
+            # Amplitud pseudo-ATR en %
+            recent_prices = prices_arr[max(0, i - 24 + 1):i + 1]
+            amplitude[i] = (np.max(recent_prices) - np.min(recent_prices)) / prices_arr[i]
+
+    # 4. Momentum y Aceleración
     momentum_1 = returns.copy()
     momentum_3 = np.zeros_like(returns)
     momentum_6 = np.zeros_like(returns)
@@ -56,12 +66,16 @@ def compute_features(prices, volumes, orderbook_metrics, news_data):
         if i >= 12: momentum_12[i] = (prices_arr[i] - prices_arr[i-12]) / prices_arr[i-12]
         if i >= 24: momentum_24[i] = (prices_arr[i] - prices_arr[i-24]) / prices_arr[i-24]
 
+    accel_momentum = np.zeros_like(returns)
+    for i in range(1, len(prices_arr)):
+        accel_momentum[i] = momentum_1[i] - momentum_1[i-1]
+
     # 5. Build historical feature matrix for training
-    # Targets: Return(t) for multiple horizons (we predict 24 steps ahead simultaneously)
+    # Targets: Return(t) for multiple horizons
     X = []
     y = []
 
-    start_idx = ma_long_window
+    start_idx = 24 # Necesitamos al menos 24 puntos históricos para el momentum_24
     horizon = 24
 
     for i in range(start_idx, len(prices_arr) - horizon):
@@ -76,11 +90,13 @@ def compute_features(prices, volumes, orderbook_metrics, news_data):
             momentum_6[i],                                    # F4: Momentum 6h
             momentum_12[i],                                   # F5: Momentum 12h
             momentum_24[i],                                   # F6: Momentum 24h
-            (prices_arr[i] - ma_short[i]) / ma_short[i],      # F7: Distancia MA corta
-            (prices_arr[i] - ma_long[i]) / ma_long[i],        # F8: Distancia MA larga
-            volatility_short[i],                              # F9: Volatilidad corta
-            volatility_long[i],                               # F10: Volatilidad larga
-            np.log1p(volumes_arr[i]),                         # F11: Log Volumen (mas estable)
+            accel_momentum[i],                                # F7: Aceleración del momentum
+            (prices_arr[i] - ema_short[i]) / ema_short[i],    # F8: Distancia EMA corta
+            (prices_arr[i] - ema_long[i]) / ema_long[i],      # F9: Distancia EMA larga
+            volatility_short[i],                              # F10: Volatilidad corta
+            volatility_long[i],                               # F11: Volatilidad larga
+            amplitude[i],                                     # F12: Amplitud reciente
+            np.log1p(volumes_arr[i]),                         # F13: Log Volumen
         ]
 
         # Validar numéricos
@@ -109,10 +125,10 @@ def compute_features(prices, volumes, orderbook_metrics, news_data):
         if headlines:
             news_sentiment = sum(h.get("sentiment", 0) for h in headlines) / len(headlines)
 
-    # Market regime logic based on MA crossover and volatility (using standard terms to map nicely in JS)
+    # Market regime logic based on EMA crossover and volatility
     regime = "neutral"
     if curr_price > 0:
-        ma_ratio = ma_short[curr_idx] / ma_long[curr_idx] if ma_long[curr_idx] > 0 else 1.0
+        ma_ratio = ema_short[curr_idx] / ema_long[curr_idx] if ema_long[curr_idx] > 0 else 1.0
         vol_threshold = np.percentile(volatility_long[start_idx:], 70) if len(volatility_long) > start_idx else 0.02
         if ma_ratio > 1.01 and volatility_long[curr_idx] > vol_threshold:
             regime = "bullish"
@@ -131,10 +147,12 @@ def compute_features(prices, volumes, orderbook_metrics, news_data):
         momentum_6[curr_idx],
         momentum_12[curr_idx],
         momentum_24[curr_idx],
-        (curr_price - ma_short[curr_idx]) / ma_short[curr_idx] if ma_short[curr_idx] > 0 else 0.0,
-        (curr_price - ma_long[curr_idx]) / ma_long[curr_idx] if ma_long[curr_idx] > 0 else 0.0,
+        accel_momentum[curr_idx],
+        (curr_price - ema_short[curr_idx]) / ema_short[curr_idx] if ema_short[curr_idx] > 0 else 0.0,
+        (curr_price - ema_long[curr_idx]) / ema_long[curr_idx] if ema_long[curr_idx] > 0 else 0.0,
         volatility_short[curr_idx],
         volatility_long[curr_idx],
+        amplitude[curr_idx],
         np.log1p(volumes_arr[curr_idx])
     ]
     raw_current = [0.0 if not np.isfinite(f) else float(f) for f in raw_current]
@@ -159,7 +177,7 @@ def compute_features(prices, volumes, orderbook_metrics, news_data):
 def fallback_features(orderbook_metrics, news_data):
     """Fallback if history is insufficient."""
     return {
-        "model_inputs": [0.0] * 11,
+        "model_inputs": [0.0] * 13,
         "signals": {
             "news_sentiment": 0.0,
             "headline_count": 0,

@@ -67,10 +67,10 @@ def train_and_predict(current_price, current_features, historical_data, news_ava
         y_train = np.array(y_train)
         y_val = np.array(y_val)
 
-        # 2. Selección de modelo (compiten modelos directos multi-horizonte)
+        # 2. Selección de modelo (compiten Ridge y ExtraTreesRegressor)
         models = {
             "Ridge": Ridge(alpha=1.0),
-            "HistGradientBoostingRegressor": MultiOutputRegressor(HistGradientBoostingRegressor(random_state=42, max_iter=50))
+            "ExtraTrees": MultiOutputRegressor(ExtraTreesRegressor(n_estimators=50, max_depth=10, random_state=42, n_jobs=-1))
         }
 
         best_model_name = None
@@ -82,7 +82,7 @@ def train_and_predict(current_price, current_features, historical_data, news_ava
             clf.fit(X_train, y_train)
             preds = clf.predict(X_val)
 
-            # Global RMSE across all 24 horizons
+            # RMSE Global a través de los 24 horizontes
             rmse = np.sqrt(mean_squared_error(y_val, preds))
             if rmse < best_rmse:
                 best_rmse = rmse
@@ -90,7 +90,8 @@ def train_and_predict(current_price, current_features, historical_data, news_ava
                 best_model_name = name
                 validation_residuals = y_val - preds
 
-        # Calculate standard deviation of residuals per horizon for uncertainty bands
+        # Calcular desviación estándar de los residuos por horizonte
+        # Esto es clave para unas bandas que tengan sentido matemático real
         residual_std_per_horizon = np.std(validation_residuals, axis=0)
 
         # Retrenar el mejor modelo con todos los datos disponibles
@@ -98,7 +99,7 @@ def train_and_predict(current_price, current_features, historical_data, news_ava
         best_model.fit(X, y_full)
         joblib.dump(best_model, MODEL_FILE)
 
-        # 3. Predicción multi-horizonte directa (24h de golpe)
+        # 3. Predicción multi-horizonte directa y calibración de bandas
         curr_inputs = np.array(list(current_features["model_inputs"])).reshape(1, -1)
         pred_returns = best_model.predict(curr_inputs)[0]
 
@@ -106,49 +107,67 @@ def train_and_predict(current_price, current_features, historical_data, news_ava
         lower_prices = []
         upper_prices = []
 
-        # Amplificador de la señal de prediccion para que la salida sea util y muestre tendencia
-        momentum_signal = curr_inputs[0, 1] # F2: momentum reciente 1h
-        trend_amplifier = 1.0 + (np.sign(momentum_signal) * min(abs(momentum_signal) * 5, 2.0))
+        # Incorporamos las noticias internamente para empujar sutilmente la predicción
+        sentiment_shift = 0.0
+        if news_available:
+            sentiment_val = current_features["signals"]["news_sentiment"]
+            # Maximo de +-0.5% shift por culpa de noticias extremas
+            sentiment_shift = np.sign(sentiment_val) * min(abs(sentiment_val) * 0.005, 0.005)
 
         for step in range(24):
-            # Amplificamos ligeramente el retorno de la IA si el mercado esta en tendencia fuerte
-            # Esto evita la salida de linea plana "muerta" y le da forma util
-            adjusted_return = pred_returns[step] * trend_amplifier
+            # Retorno base predicho por el modelo para este horizonte + impacto de noticias
+            base_return = pred_returns[step] + sentiment_shift
 
-            # Limit extreme predictions to +/- 10% movement per step vs origin
-            clamped_return = max(min(adjusted_return, 0.1), -0.1)
+            # Limitar predicciones extremas a +/- 15% de movimiento por paso vs origen para estabilidad
+            clamped_return = max(min(base_return, 0.15), -0.15)
 
-            # Multi-horizon prediction is cumulative return from current_price
+            # El precio predicho es el precio actual alterado por el retorno acumulado predicho
             pred_price = current_price * (1 + clamped_return)
             predicted_prices.append(float(pred_price))
 
-            # Uncertainty bounds based on validation residuals (95% confidence interval roughly 1.96 * std)
-            # Add a small base volatility to avoid 0 bounds
+            # Bandas de incertidumbre basadas en el residuo real de validación de este horizonte
+            # Z-score 1.64 para un ~90% confidence interval
+            # horizon_vol nunca será menor de 0.005 (0.5%) para asegurar que la banda es visible
             horizon_vol = max(residual_std_per_horizon[step], 0.005)
-            drift_bound = current_price * horizon_vol * 1.96
 
-            lower_prices.append(float(pred_price - drift_bound))
-            upper_prices.append(float(pred_price + drift_bound))
+            # Escenario bajista (lower) y alcista (upper)
+            drift_bound_lower = current_price * (horizon_vol * 1.64)
+            drift_bound_upper = current_price * (horizon_vol * 1.64)
 
-        # 4. Calcular una métrica de confianza con sentido
-        # Compare model's RMSE to a naive baseline predicting the mean return
-        naive_baseline = np.full_like(y_val, np.mean(y_train))
-        naive_rmse = np.sqrt(mean_squared_error(y_val, naive_baseline))
+            lower_prices.append(float(pred_price - drift_bound_lower))
+            upper_prices.append(float(pred_price + drift_bound_upper))
 
-        if naive_rmse > 0:
-            # How much better is the model than predicting the mean return?
-            improvement = (naive_rmse - best_rmse) / naive_rmse
-            # Scale it to a nice 0-1 range. If improvement is negative, confidence is 0.
-            # If improvement is 50%, confidence is extremely high (1.0).
-            model_confidence = max(0.0, min(1.0, improvement * 2.0))
+        # 4. Auditoría frente a baselines y cálculo estricto de confianza (0 a 100)
+        # Baseline 1: Drift Medio Reciente
+        drift_baseline = np.full_like(y_val, np.mean(y_train))
+        drift_rmse = np.sqrt(mean_squared_error(y_val, drift_baseline))
 
-            # Boost confidence slightly if we have recent valid signals
-            if current_features["signals"]["volume_pressure"] != 0:
-                model_confidence = min(1.0, model_confidence + 0.1)
+        # Baseline 2: Último valor conocido (retorno 0 en todos los horizontes)
+        zero_baseline = np.zeros_like(y_val)
+        zero_rmse = np.sqrt(mean_squared_error(y_val, zero_baseline))
+
+        best_baseline_rmse = min(drift_rmse, zero_rmse)
+
+        if best_baseline_rmse > 0:
+            # Porcentaje de mejora frente al MEJOR baseline
+            improvement = (best_baseline_rmse - best_rmse) / best_baseline_rmse
+
+            if improvement <= 0:
+                # Si el modelo es peor que un baseline simple, confianza mínima por supervivencia técnica
+                confidence_pct = 15.0
+            else:
+                # Escalamos la mejora. Una mejora del 5% frente al baseline ya es muy decente en mercados eficientes.
+                # Una mejora >15% merecerá casi 100 de confianza.
+                confidence_pct = min(100.0, 30.0 + (improvement * 400.0))
+
+            # Bonus penalización por amplitud de las bandas (bandas muy anchas = menos confianza)
+            avg_band_width = np.mean([u - l for u, l in zip(upper_prices, lower_prices)]) / current_price
+            if avg_band_width > 0.05: # Si la banda media es mayor al 5% del precio
+                confidence_pct *= 0.8
         else:
-            model_confidence = 0.0
+            confidence_pct = 10.0
 
-        current_features["signals"]["confidence"] = float(model_confidence)
+        current_features["signals"]["confidence"] = float(max(0.0, min(100.0, confidence_pct)))
 
         model_info = {
             "name": best_model_name,

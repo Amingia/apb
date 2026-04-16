@@ -200,3 +200,261 @@ INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/klines?symbol=BTCUSDT
 INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/klines?symbol=BTCUSDT&interval=1h&limit=1000&endTime=1772686799999 "HTTP/1.1 200 OK"
 INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/klines?symbol=BTCUSDT&interval=1h&limit=160&endTime=1769086799999 "HTTP/1.1 200 OK"
 INFO:app.main:Analysis cache updated successfully.
+INFO:app.main:Running analysis pipeline...
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/ticker/price?symbol=BTCUSDT "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/ticker/24hr?symbol=BTCUSDT "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/ticker/bookTicker?symbol=BTCUSDT "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/depth?symbol=BTCUSDT&limit=50 "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/klines?symbol=BTCUSDT&interval=1h&limit=1000 "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/klines?symbol=BTCUSDT&interval=1h&limit=1000&endTime=1772686799999 "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/klines?symbol=BTCUSDT&interval=1h&limit=160&endTime=1769086799999 "HTTP/1.1 200 OK"
+INFO:app.main:Analysis cache updated successfully.
+INFO:app.main:Running analysis pipeline...
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/ticker/price?symbol=BTCUSDT "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/ticker/24hr?symbol=BTCUSDT "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/ticker/bookTicker?symbol=BTCUSDT "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/depth?symbol=BTCUSDT&limit=50 "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/klines?symbol=BTCUSDT&interval=1h&limit=1000 "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/klines?symbol=BTCUSDT&interval=1h&limit=1000&endTime=1772686799999 "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/klines?symbol=BTCUSDT&interval=1h&limit=160&endTime=1769086799999 "HTTP/1.1 200 OK"
+INFO:app.main:Analysis cache updated successfully.
+INFO:app.main:Running analysis pipeline...
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/ticker/price?symbol=BTCUSDT "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/ticker/24hr?symbol=BTCUSDT "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/ticker/bookTicker?symbol=BTCUSDT "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/depth?symbol=BTCUSDT&limit=50 "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/klines?symbol=BTCUSDT&interval=1h&limit=1000 "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/klines?symbol=BTCUSDT&interval=1h&limit=1000&endTime=1772762399999 "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/klines?symbol=BTCUSDT&interval=1h&limit=160&endTime=1769162399999 "HTTP/1.1 200 OK"
+INFO:app.main:Analysis cache updated successfully.
+INFO:app.main:Running analysis pipeline...
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/ticker/price?symbol=BTCUSDT "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/ticker/24hr?symbol=BTCUSDT "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/ticker/bookTicker?symbol=BTCUSDT "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/depth?symbol=BTCUSDT&limit=50 "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/klines?symbol=BTCUSDT&interval=1h&limit=1000 "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/klines?symbol=BTCUSDT&interval=1h&limit=1000&endTime=1772765999999 "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/klines?symbol=BTCUSDT&interval=1h&limit=160&endTime=1769165999999 "HTTP/1.1 200 OK"
+INFO:app.main:Analysis cache updated successfully.
+INFO:app.main:Running analysis pipeline...
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/ticker/price?symbol=BTCUSDT "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/ticker/24hr?symbol=BTCUSDT "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/ticker/bookTicker?symbol=BTCUSDT "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/depth?symbol=BTCUSDT&limit=50 "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/klines?symbol=BTCUSDT&interval=1h&limit=1000 "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/klines?symbol=BTCUSDT&interval=1h&limit=1000&endTime=1772765999999 "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/klines?symbol=BTCUSDT&interval=1h&limit=160&endTime=1769165999999 "HTTP/1.1 200 OK"
+INFO:app.main:Analysis cache updated successfully.
+INFO:app.main:Running analysis pipeline...
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/ticker/price?symbol=BTCUSDT "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/ticker/24hr?symbol=BTCUSDT "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/ticker/bookTicker?symbol=BTCUSDT "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/depth?symbol=BTCUSDT&limit=50 "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/klines?symbol=BTCUSDT&interval=1h&limit=1000 "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/klines?symbol=BTCUSDT&interval=1h&limit=1000&endTime=1772765999999 "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/klines?symbol=BTCUSDT&interval=1h&limit=160&endTime=1769165999999 "HTTP/1.1 200 OK"
+INFO:app.main:Analysis cache updated successfully.
+INFO:     127.0.0.1:52332 - "GET /api/analysis HTTP/1.1" 200 OK
+INFO:app.main:Running analysis pipeline...
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/ticker/price?symbol=BTCUSDT "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/ticker/24hr?symbol=BTCUSDT "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/ticker/bookTicker?symbol=BTCUSDT "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/depth?symbol=BTCUSDT&limit=50 "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/klines?symbol=BTCUSDT&interval=1h&limit=1000 "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/klines?symbol=BTCUSDT&interval=1h&limit=1000&endTime=1772765999999 "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/klines?symbol=BTCUSDT&interval=1h&limit=160&endTime=1769165999999 "HTTP/1.1 200 OK"
+INFO:app.main:Analysis cache updated successfully.
+INFO:app.main:Running analysis pipeline...
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/ticker/price?symbol=BTCUSDT "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/ticker/24hr?symbol=BTCUSDT "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/ticker/bookTicker?symbol=BTCUSDT "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/depth?symbol=BTCUSDT&limit=50 "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/klines?symbol=BTCUSDT&interval=1h&limit=1000 "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/klines?symbol=BTCUSDT&interval=1h&limit=1000&endTime=1772765999999 "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/klines?symbol=BTCUSDT&interval=1h&limit=160&endTime=1769165999999 "HTTP/1.1 200 OK"
+INFO:app.main:Analysis cache updated successfully.
+INFO:app.main:Running analysis pipeline...
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/ticker/price?symbol=BTCUSDT "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/ticker/24hr?symbol=BTCUSDT "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/ticker/bookTicker?symbol=BTCUSDT "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/depth?symbol=BTCUSDT&limit=50 "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/klines?symbol=BTCUSDT&interval=1h&limit=1000 "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/klines?symbol=BTCUSDT&interval=1h&limit=1000&endTime=1772765999999 "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/klines?symbol=BTCUSDT&interval=1h&limit=160&endTime=1769165999999 "HTTP/1.1 200 OK"
+INFO:app.main:Analysis cache updated successfully.
+INFO:app.main:Running analysis pipeline...
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/ticker/price?symbol=BTCUSDT "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/ticker/24hr?symbol=BTCUSDT "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/ticker/bookTicker?symbol=BTCUSDT "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/depth?symbol=BTCUSDT&limit=50 "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/klines?symbol=BTCUSDT&interval=1h&limit=1000 "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/klines?symbol=BTCUSDT&interval=1h&limit=1000&endTime=1772765999999 "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/klines?symbol=BTCUSDT&interval=1h&limit=160&endTime=1769165999999 "HTTP/1.1 200 OK"
+INFO:app.main:Analysis cache updated successfully.
+INFO:app.main:Running analysis pipeline...
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/ticker/price?symbol=BTCUSDT "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/ticker/24hr?symbol=BTCUSDT "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/ticker/bookTicker?symbol=BTCUSDT "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/depth?symbol=BTCUSDT&limit=50 "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/klines?symbol=BTCUSDT&interval=1h&limit=1000 "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/klines?symbol=BTCUSDT&interval=1h&limit=1000&endTime=1772765999999 "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/klines?symbol=BTCUSDT&interval=1h&limit=160&endTime=1769165999999 "HTTP/1.1 200 OK"
+INFO:app.main:Analysis cache updated successfully.
+INFO:app.main:Running analysis pipeline...
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/ticker/price?symbol=BTCUSDT "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/ticker/24hr?symbol=BTCUSDT "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/ticker/bookTicker?symbol=BTCUSDT "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/depth?symbol=BTCUSDT&limit=50 "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/klines?symbol=BTCUSDT&interval=1h&limit=1000 "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/klines?symbol=BTCUSDT&interval=1h&limit=1000&endTime=1772765999999 "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/klines?symbol=BTCUSDT&interval=1h&limit=160&endTime=1769165999999 "HTTP/1.1 200 OK"
+INFO:app.main:Analysis cache updated successfully.
+INFO:app.main:Running analysis pipeline...
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/ticker/price?symbol=BTCUSDT "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/ticker/24hr?symbol=BTCUSDT "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/ticker/bookTicker?symbol=BTCUSDT "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/depth?symbol=BTCUSDT&limit=50 "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/klines?symbol=BTCUSDT&interval=1h&limit=1000 "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/klines?symbol=BTCUSDT&interval=1h&limit=1000&endTime=1772765999999 "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/klines?symbol=BTCUSDT&interval=1h&limit=160&endTime=1769165999999 "HTTP/1.1 200 OK"
+INFO:app.main:Analysis cache updated successfully.
+INFO:app.main:Running analysis pipeline...
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/ticker/price?symbol=BTCUSDT "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/ticker/24hr?symbol=BTCUSDT "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/ticker/bookTicker?symbol=BTCUSDT "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/depth?symbol=BTCUSDT&limit=50 "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/klines?symbol=BTCUSDT&interval=1h&limit=1000 "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/klines?symbol=BTCUSDT&interval=1h&limit=1000&endTime=1772765999999 "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/klines?symbol=BTCUSDT&interval=1h&limit=160&endTime=1769165999999 "HTTP/1.1 200 OK"
+INFO:app.main:Analysis cache updated successfully.
+INFO:app.main:Running analysis pipeline...
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/ticker/price?symbol=BTCUSDT "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/ticker/24hr?symbol=BTCUSDT "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/ticker/bookTicker?symbol=BTCUSDT "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/depth?symbol=BTCUSDT&limit=50 "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/klines?symbol=BTCUSDT&interval=1h&limit=1000 "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/klines?symbol=BTCUSDT&interval=1h&limit=1000&endTime=1772765999999 "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/klines?symbol=BTCUSDT&interval=1h&limit=160&endTime=1769165999999 "HTTP/1.1 200 OK"
+INFO:app.main:Analysis cache updated successfully.
+INFO:app.main:Running analysis pipeline...
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/ticker/price?symbol=BTCUSDT "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/ticker/24hr?symbol=BTCUSDT "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/ticker/bookTicker?symbol=BTCUSDT "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/depth?symbol=BTCUSDT&limit=50 "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/klines?symbol=BTCUSDT&interval=1h&limit=1000 "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/klines?symbol=BTCUSDT&interval=1h&limit=1000&endTime=1772765999999 "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/klines?symbol=BTCUSDT&interval=1h&limit=160&endTime=1769165999999 "HTTP/1.1 200 OK"
+INFO:app.main:Analysis cache updated successfully.
+INFO:app.main:Running analysis pipeline...
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/ticker/price?symbol=BTCUSDT "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/ticker/24hr?symbol=BTCUSDT "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/ticker/bookTicker?symbol=BTCUSDT "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/depth?symbol=BTCUSDT&limit=50 "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/klines?symbol=BTCUSDT&interval=1h&limit=1000 "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/klines?symbol=BTCUSDT&interval=1h&limit=1000&endTime=1772765999999 "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/klines?symbol=BTCUSDT&interval=1h&limit=160&endTime=1769165999999 "HTTP/1.1 200 OK"
+INFO:app.main:Analysis cache updated successfully.
+INFO:app.main:Running analysis pipeline...
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/ticker/price?symbol=BTCUSDT "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/ticker/24hr?symbol=BTCUSDT "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/ticker/bookTicker?symbol=BTCUSDT "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/depth?symbol=BTCUSDT&limit=50 "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/klines?symbol=BTCUSDT&interval=1h&limit=1000 "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/klines?symbol=BTCUSDT&interval=1h&limit=1000&endTime=1772765999999 "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/klines?symbol=BTCUSDT&interval=1h&limit=160&endTime=1769165999999 "HTTP/1.1 200 OK"
+INFO:app.main:Analysis cache updated successfully.
+INFO:app.main:Running analysis pipeline...
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/ticker/price?symbol=BTCUSDT "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/ticker/24hr?symbol=BTCUSDT "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/ticker/bookTicker?symbol=BTCUSDT "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/depth?symbol=BTCUSDT&limit=50 "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/klines?symbol=BTCUSDT&interval=1h&limit=1000 "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/klines?symbol=BTCUSDT&interval=1h&limit=1000&endTime=1772765999999 "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/klines?symbol=BTCUSDT&interval=1h&limit=160&endTime=1769165999999 "HTTP/1.1 200 OK"
+INFO:app.main:Analysis cache updated successfully.
+INFO:app.main:Running analysis pipeline...
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/ticker/price?symbol=BTCUSDT "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/ticker/24hr?symbol=BTCUSDT "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/ticker/bookTicker?symbol=BTCUSDT "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/depth?symbol=BTCUSDT&limit=50 "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/klines?symbol=BTCUSDT&interval=1h&limit=1000 "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/klines?symbol=BTCUSDT&interval=1h&limit=1000&endTime=1772765999999 "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/klines?symbol=BTCUSDT&interval=1h&limit=160&endTime=1769165999999 "HTTP/1.1 200 OK"
+INFO:app.main:Analysis cache updated successfully.
+INFO:app.main:Running analysis pipeline...
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/ticker/price?symbol=BTCUSDT "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/ticker/24hr?symbol=BTCUSDT "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/ticker/bookTicker?symbol=BTCUSDT "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/depth?symbol=BTCUSDT&limit=50 "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/klines?symbol=BTCUSDT&interval=1h&limit=1000 "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/klines?symbol=BTCUSDT&interval=1h&limit=1000&endTime=1772765999999 "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/klines?symbol=BTCUSDT&interval=1h&limit=160&endTime=1769165999999 "HTTP/1.1 200 OK"
+INFO:app.main:Analysis cache updated successfully.
+INFO:app.main:Running analysis pipeline...
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/ticker/price?symbol=BTCUSDT "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/ticker/24hr?symbol=BTCUSDT "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/ticker/bookTicker?symbol=BTCUSDT "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/depth?symbol=BTCUSDT&limit=50 "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/klines?symbol=BTCUSDT&interval=1h&limit=1000 "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/klines?symbol=BTCUSDT&interval=1h&limit=1000&endTime=1772765999999 "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/klines?symbol=BTCUSDT&interval=1h&limit=160&endTime=1769165999999 "HTTP/1.1 200 OK"
+INFO:app.main:Analysis cache updated successfully.
+INFO:app.main:Running analysis pipeline...
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/ticker/price?symbol=BTCUSDT "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/ticker/24hr?symbol=BTCUSDT "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/ticker/bookTicker?symbol=BTCUSDT "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/depth?symbol=BTCUSDT&limit=50 "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/klines?symbol=BTCUSDT&interval=1h&limit=1000 "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/klines?symbol=BTCUSDT&interval=1h&limit=1000&endTime=1772765999999 "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/klines?symbol=BTCUSDT&interval=1h&limit=160&endTime=1769165999999 "HTTP/1.1 200 OK"
+INFO:app.main:Analysis cache updated successfully.
+INFO:app.main:Running analysis pipeline...
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/ticker/price?symbol=BTCUSDT "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/ticker/24hr?symbol=BTCUSDT "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/ticker/bookTicker?symbol=BTCUSDT "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/depth?symbol=BTCUSDT&limit=50 "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/klines?symbol=BTCUSDT&interval=1h&limit=1000 "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/klines?symbol=BTCUSDT&interval=1h&limit=1000&endTime=1772765999999 "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/klines?symbol=BTCUSDT&interval=1h&limit=160&endTime=1769165999999 "HTTP/1.1 200 OK"
+INFO:app.main:Analysis cache updated successfully.
+INFO:app.main:Running analysis pipeline...
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/ticker/price?symbol=BTCUSDT "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/ticker/24hr?symbol=BTCUSDT "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/ticker/bookTicker?symbol=BTCUSDT "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/depth?symbol=BTCUSDT&limit=50 "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/klines?symbol=BTCUSDT&interval=1h&limit=1000 "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/klines?symbol=BTCUSDT&interval=1h&limit=1000&endTime=1772765999999 "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/klines?symbol=BTCUSDT&interval=1h&limit=160&endTime=1769165999999 "HTTP/1.1 200 OK"
+INFO:app.main:Analysis cache updated successfully.
+INFO:app.main:Running analysis pipeline...
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/ticker/price?symbol=BTCUSDT "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/ticker/24hr?symbol=BTCUSDT "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/ticker/bookTicker?symbol=BTCUSDT "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/depth?symbol=BTCUSDT&limit=50 "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/klines?symbol=BTCUSDT&interval=1h&limit=1000 "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/klines?symbol=BTCUSDT&interval=1h&limit=1000&endTime=1772765999999 "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/klines?symbol=BTCUSDT&interval=1h&limit=160&endTime=1769165999999 "HTTP/1.1 200 OK"
+INFO:app.main:Analysis cache updated successfully.
+INFO:app.main:Running analysis pipeline...
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/ticker/price?symbol=BTCUSDT "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/ticker/24hr?symbol=BTCUSDT "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/ticker/bookTicker?symbol=BTCUSDT "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/depth?symbol=BTCUSDT&limit=50 "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/klines?symbol=BTCUSDT&interval=1h&limit=1000 "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/klines?symbol=BTCUSDT&interval=1h&limit=1000&endTime=1772765999999 "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/klines?symbol=BTCUSDT&interval=1h&limit=160&endTime=1769165999999 "HTTP/1.1 200 OK"
+INFO:app.main:Analysis cache updated successfully.
+INFO:app.main:Running analysis pipeline...
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/ticker/price?symbol=BTCUSDT "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/ticker/24hr?symbol=BTCUSDT "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/ticker/bookTicker?symbol=BTCUSDT "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/depth?symbol=BTCUSDT&limit=50 "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/klines?symbol=BTCUSDT&interval=1h&limit=1000 "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/klines?symbol=BTCUSDT&interval=1h&limit=1000&endTime=1772765999999 "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://api.binance.us/api/v3/klines?symbol=BTCUSDT&interval=1h&limit=160&endTime=1769165999999 "HTTP/1.1 200 OK"
+INFO:app.main:Analysis cache updated successfully.
+INFO:     127.0.0.1:60502 - "GET /api/analysis HTTP/1.1" 200 OK
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [489955]
